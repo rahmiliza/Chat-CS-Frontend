@@ -1,0 +1,105 @@
+{
+  "auth": {
+    "login": {
+      "title": "登入",
+      "loginToService": "登入至 {service}",
+      "loginViaXinchuanAuth": "透過 Xinchuan Auth 登入"
+    },
+    "callback": {
+      "authenticating": "正在驗證...",
+      "authenticated": "已驗證"
+    },
+    "logout": "登出"
+  },
+  "sidebar":{
+    "dashboard": "儀表板",
+    "product": "手機目錄",
+    "catalog_input": "目錄輸入",
+    "price" : "價格歷史",
+    "installments": "分期付款",
+    "brand":"品牌",
+    "banner": "橫幅", 
+ "category": "類別"
+  },
+  "button":{
+    "close": "關閉",
+    "save": "節省"
+  },
+  "Phone":{
+    "title":"電話清單",
+    "list":{
+      "name":"姓名",
+      "brand": "品牌",
+      "category":"類別",
+      "action":"動作",
+      "price":"價格",
+      "specification": {
+        "title": "規格",
+        "product_code":"產品代碼",
+        "ram": "公羊",
+        "storage":"儲存",
+        "os":"作業系統",
+        "battery": "電池",
+        "color": "顏色",
+        "rear_camera":"後置相機",
+        "front_camera":"前置鏡頭",
+        "screen_size":"螢幕尺寸"
+      }
+    },
+    "add":{
+    "title": "新增手機",
+    "name": "姓名",
+    "brand":"品牌",
+    "category":"類別",
+    "price":"價格",
+    "product_code":"產品代碼",
+    "specification": "規格",
+    "ram":"Ram",
+    "color": "顏色",
+    "storage":"儲存",
+    "os":"作業系統",
+    "rear_camera":"後置相機",
+    "screen_size":"螢幕尺寸",
+    "front_camera":"前置鏡頭",
+    "battery": "電池",
+    "image":"圖",
+    "change_image":"更改圖片",
+    "close": "關閉",
+    "save": "節省"
+    }
+  },
+   "brand": {
+    "title":"品牌",
+    "header_title":"品牌產品列表",
+    "add" : {
+    "title":"添加品牌",
+    "name":"姓名",
+    "description": "描述"
+    }
+  },
+  "category": {
+    "title":"分類",
+    "header_title":"類別產品列表",
+    "add":{
+      "title":"新增類別",
+      "name":"姓名",
+      "description": "描述"
+    }
+  },
+  "price_history":{
+  "title":"歷史價格"
+  },
+  "installment":{
+    "title":"分期付款",
+    "detail":{
+      "title":"新增類別",
+      "name":"姓名",
+      "description": "描述",
+      "month": "月",
+      "price":"價格"
+    }
+  },
+  "banner": {
+      "title" :"banner"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "name": "chat-admin",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@nuxt/icon": "1.10.3",
+    "@nuxtjs/color-mode": "3.5.2",
+    "@nuxtjs/google-fonts": "^3.2.0",
+    "@nuxtjs/i18n": "^9.5.3",
+    "@nuxtjs/tailwindcss": "6.12.2",
+    "@pinia/nuxt": "^0.11.0",
+    "@vueuse/components": "^13.0.0",
+    "chat-admin": "file:",
+    "dayjs-nuxt": "2.1.11",
+    "jose": "^5.9.6",
+    "nanoid": "^5.0.9",
+    "nuxt": "^3.16.2",
+    "nuxt-headlessui": "1.2.0",
+    "pinia": "^3.0.2",
+    "pinia-plugin-persistedstate": "4.2.0",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "vue": "latest",
+    "vue-router": "latest",
+    "vue3-toastify": "^0.2.8"
+  },
+  "devDependencies": {
+    "@iconify-json/uil": "^1.2.3",
+    "@vueuse/core": "^13.0.0",
+    "@vueuse/nuxt": "^13.0.0",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.9"
+  }
+}

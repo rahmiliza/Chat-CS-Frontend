@@ -1,0 +1,30 @@
+# Build directories
+.nuxt
+.output
+dist
+node_modules
+
+# Cache
+.cache
+
+# Generated files
+*.d.ts
+.DS_Store
+.env
+.env.*
+
+# Auto-generated files
+components.d.ts
+auto-imports.d.ts
+tailwind.config.js
+nuxt.d.ts
+
+# Lock files
+bun.lockb
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Configuration files
+tsconfig.json
+.nuxt/tsconfig.json

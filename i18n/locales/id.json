@@ -1,0 +1,20 @@
+{
+  "auth": {
+    "login": {
+      "title": "Masuk",
+      "loginToService": "Masuk ke {layanan}",
+      "loginViaXinchuanAuth": "Masuk melalui Otentikasi Xinchuan"
+    },
+    "callback": {
+      "authenticating": "Proses Identifikasi Pengguna...",
+      "authenticated": "Terverifikasi"
+    },
+    "logout": "Keluar"
+  },
+  "sidebar": { "dashboard": "Dashboard", "chats": "Chats" },
+  "chats": {
+    "title": "Chats",
+    "add_chat_room": "Tambahkan Ruang Obrolan",
+    "noChats": "Tidak ada obrolan"
+  }
+}

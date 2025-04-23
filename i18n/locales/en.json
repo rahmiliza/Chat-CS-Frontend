@@ -1,0 +1,20 @@
+{
+  "auth": {
+    "login": {
+      "title": "Login",
+      "loginToService": "Login to {service}",
+      "loginViaXinchuanAuth": "Login via Xinchuan Auth"
+    },
+    "callback": {
+      "authenticating": "Authenticating...",
+      "authenticated": "Authenticated"
+    },
+    "logout": "Logout"
+  },
+  "sidebar": { "dashboard": "Dashboard", "chats": "Chats", "roles": "Roles" },
+  "chats": {
+    "title": "Chats",
+    "add_chat_room": "Add Chat Room",
+    "noChats": "No chats"
+  }
+}
