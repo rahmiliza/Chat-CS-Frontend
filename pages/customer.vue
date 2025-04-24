@@ -42,6 +42,19 @@ const socket = io(config.public.socketUrl, {
   auth: { userId: user?.id }
 })
 
+
+const { data } = await useApi<Response<ChatRoom[]>>('/chat-rooms', {
+  method: 'GET',
+})
+if (data.value?.ok) {
+  activeChat.value = data.value?.data?.[0];
+  await nextTick()
+    if (chatting.value) {
+      chatting.value.startChatMessage(message.value);
+    }
+}
+
+
 const startChat = async () => {
 
   const { data } = await useApi<Response>(config.public.apiBaseUrl + '/chat-rooms', {
@@ -81,7 +94,7 @@ async function fetchActiveChatDetails(nextCursor: string = '') {
 
   try {
     const { data, error } = await useApi<ResponseWithPagination>(
-      `/chat-rooms/${activeChat.value?.id}/chats/?offset=${nextCursor}&sortBy=created_at&order=DESC`,
+      `admin/chat-rooms/${activeChat.value?.id}/chats/?offset=${nextCursor}&sortBy=created_at&order=DESC`,
       { method: 'GET' }
     )
 
