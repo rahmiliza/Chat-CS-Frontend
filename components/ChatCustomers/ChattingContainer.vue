@@ -4,7 +4,7 @@
       <!-- <shell-indicator-loading /> -->
     </template>
 
-    <div class="h-14 w-full flex justify-between items-center border-b border-black px-2 pb-1">
+    <div class="h-14 bg-blue-100 w-full flex justify-between items-center border-b border-black px-2 ">
       <div class="w-full text-lg font-bold truncate ml-2">
         <template v-if="activeChat?.participant && activeChat.participant.length > 2">
           {{
@@ -44,18 +44,18 @@
       </shell-tooltip> -->
     </div>
     <div class="h-[calc(100%-56px)] w-full flex flex-col">
-      <div ref="chatList" v-scroll="onScroll" class="h-full w-full overflow-y-auto flex flex-col-reverse px-4 mb-2">
+      <div ref="chatList" v-scroll="onScroll" class="h-full bg-blue-50 w-full overflow-y-auto flex flex-col-reverse px-4 mb-2 py-4">
         <template v-for="chat in activeChatDetails?.chats" :key="chat?.id">
           <ChatBubble :chat="chat" :active-chat-details="activeChatDetails" />
         </template>
       </div>
       <decorators-permission-guard v-if="!activeChat?.closed_at" permission="chat::store">
-        <div class="flex gap-1 items-center pl-2">
+        <div class="flex items-center">
           <Menu>
             <div>
-              <MenuButton class="inline-flex w-full relative">
+              <MenuButton class=" inline-flex w-full relative">
                 <fa-icon icon="paperclip"
-                  class="font-bold p-2 rounded-lg text-xl text-red-600 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-red-300/50" />
+                  class="font-bold rounded-sm text-xl text-red-600 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-red-300/50" />
               </MenuButton>
             </div>
 
@@ -80,7 +80,7 @@
             </transition>
           </Menu>
           <input v-model="message" placeholder="Enter Message"
-            class="w-full p-2 dark:bg-slate-900 bg-slate-100 rounded-lg border border-slate-400 resize-none overflow-hidden max-h-20 text-sm outline-none focus:border-red-500"
+            class="w-full p-2 dark:bg-slate-900 bg-white rounded-lg border border-slate-400 resize-none overflow-hidden max-h-20 text-sm outline-none focus:border-red-500"
             rows="1" @keydown.enter="() => handleRequestSendMessage('TEXT')" />
         </div>
       </decorators-permission-guard>
