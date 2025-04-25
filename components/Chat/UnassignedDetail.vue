@@ -53,7 +53,7 @@
           <ChatUnassignedBubble :chat="chat" :active-chat-details="activeChatDetails" />
         </template>
       </div>
-      <!-- <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat::store">
+      <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat::store">
         <div class="flex gap-1 items-center pl-2">
           <Menu>
             <div>
@@ -84,10 +84,10 @@
             </transition>
           </Menu>
           <input v-model="message" placeholder="Enter Message"
-            class="w-full p-2 bg-slate-100 rounded-lg text-black border border-slate-400 resize-none overflow-hidden max-h-20 text-sm outline-none focus:border-red-500"
+            class="w-full p-2 dark:bg-slate-900 bg-slate-100 rounded-lg text-black border border-slate-400 resize-none overflow-hidden max-h-20 text-sm outline-none focus:border-red-500"
             rows="1" @keydown.enter="() => handleRequestSendMessage('TEXT')" />
         </div>
-      </DPermissionGuard> -->
+      </DPermissionGuard> 
     </div>
   </div>
   <div v-if="uploadedFiles.length > 0"
@@ -396,7 +396,7 @@ async function handleFinishChat() {
   emits('toggleGlobalLoading', true)
 
   try {
-    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('/chats/finish', {
+    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('/admin/chat-rooms/' + activeChatDetails?.chat_room?.id + '/close-chat', {
       method: 'PUT',
       body: {
         room_id: props.activeChatDetails?.chat_room?.id,
