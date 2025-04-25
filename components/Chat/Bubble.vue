@@ -1,9 +1,9 @@
 <template>
-  <div class="chat-bubble w-fit max-w-[70%] mt-2 px-2 pt-2 pb-1 rounded-lg text-black relative" :class="[
+  <div class="chat-bubble w-fit max-w-[70%] mt-2 px-2 pb-1 rounded-lg text-black relative" :class="[
     chat?.sent_by_code === user?.id ? 'ml-auto sent' : 'received',
     chat?.message_type === 'TEXT' ? (chat?.sent_by_code === user?.id ? 'bg-blue-300/60' : 'bg-slate-200') : 'bg-none',
   ]">
-    <div v-if="activeChatDetails?.chat_room?.participant?.length > 2" class="mb-1 flex gap-2 items-center">
+    <div v-if="activeChatDetails?.chat_room?.participant?.length > 2" class="mb-1 flex items-center">
       <Icon :name="getRoleIcon(chat.sent_by_code)" :size="'1.5rem'" class="text-sm text-slate-500" />
       <div class="font-bold text-sm text-slate-700">
         {{
@@ -26,7 +26,7 @@
           }
         " />
     </template>
-    <div class="text-[10px] text-slate-600 mt-1 text-right">
+    <div class="text-[8px] text-slate-600 mt-1 text-right">
       {{ formatDatetime(chat.created_at) }}
     </div>
   </div>
