@@ -80,7 +80,7 @@
             </transition>
           </Menu>
           <input v-model="message" placeholder="Enter Message"
-            class="w-full p-2 bg-slate-100 rounded-lg border border-slate-400 resize-none overflow-hidden max-h-20 text-sm outline-none focus:border-red-500"
+            class="w-full p-2 dark:bg-slate-900 bg-slate-100 rounded-lg border border-slate-400 resize-none overflow-hidden max-h-20 text-sm outline-none focus:border-red-500"
             rows="1" @keydown.enter="() => handleRequestSendMessage('TEXT')" />
         </div>
       </decorators-permission-guard>
@@ -385,7 +385,7 @@ async function handleFinishChat() {
   emits('toggleGlobalLoading', true)
 
   try {
-    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('/chats/finish', {
+    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('/admin/chat-rooms/' + activeChatDetails?.chat_room?.id + '/close-chat', {
       method: 'PUT',
       body: {
         room_id: props.activeChatDetails?.chat_room?.id,

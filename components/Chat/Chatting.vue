@@ -82,7 +82,7 @@
           </transition>
         </Menu>
         <input v-model="message" placeholder="Enter Message"
-          class="w-full p-2 bg-slate-100 rounded-lg text-black border border-slate-400 resize-none overflow-hidden max-h-20 text-sm outline-none focus:border-blue-500"
+          class="w-full p-2 dark:bg-slate-900 bg-slate-100 rounded-lg text-black border border-slate-400 resize-none overflow-hidden max-h-20 text-sm outline-none focus:border-blue-500"
           rows="1" @keydown.enter="() => handleRequestSendMessage('TEXT')" />
       </div>
       <!-- </DPermissionGuard> -->
