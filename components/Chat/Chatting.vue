@@ -4,8 +4,9 @@
       <LoadingIndicator />
     </template>
 
-    <div class=" w-full flex justify-between items-center border-b border-slate-300/50 px-2 py-1.5 bg-slate-200/20">
+    <div class=" w-full flex justify-between items-center border-b border-slate-300/50 px-2 py-3 bg-blue-400/20">
       <div class="w-full text font-semibold truncate ml-2 text-gray-800">
+        
         <template v-if="activeChatData?.participant && activeChatData.participant.length > 2">
           {{
             activeChatData?.participant
@@ -45,7 +46,7 @@
       </div>
     </div>
     <div class="w-full flex flex-col flex-1">
-      <div ref="chatList" v-scroll="onScroll" class="h-full w-full overflow-y-auto flex flex-col-reverse p-4 gap-2">
+      <div ref="chatList" v-scroll="onScroll" class="h-full w-full bg-blue-50/20 overflow-y-auto flex flex-col-reverse p-4 gap-2">
         <template v-for="chat in activeChatDetails?.chats" :key="chat?.id">
           <ChatBubble :chat="chat" :active-chat-details="activeChatDetails" />
         </template>
@@ -325,7 +326,11 @@ async function handleOkAddNewParticipant() {
         emits('updateChatListData', tempListChat)
         emits('triggerFetchChatRoomDetails')
       }
-    } else {
+    }
+    else if (data.value?.status === false) {
+      toast.add({ message: 'Participant already exists in this chat', type: "error" })
+    }  
+    else {
       const errMsg = error.value?.data?.message ?? 'Failed to add participant, please try again1'
       toast.add({ message: errMsg, type: "error" })
     }
