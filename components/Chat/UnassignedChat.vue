@@ -18,7 +18,7 @@
           @trigger-fetch-chat-room-details="triggerFetchChatRoomDetails" />
       </template>
       <template v-else>
-        <pages-manage-customer-chat-queue-counter :admin-chat-queue="adminChatQueue" />
+        <!-- <pages-manage-customer-chat-queue-counter :admin-chat-queue="adminChatQueue" /> -->
       </template>
     </div>
   </div>

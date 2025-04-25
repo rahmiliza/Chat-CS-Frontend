@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-full">
-    <template v-if="pending || adminChatQueuePending || globalLoading">
+    <template v-if="pendingChatRooms || globalLoading">
       <LoadingIndicator />
     </template>
     <div class="w-full h-full flex bg-white overflow-hidden min-w-[800px]">
@@ -18,7 +18,7 @@
           @trigger-fetch-chat-room-details="triggerFetchChatRoomDetails" />
       </template>
       <template v-else>
-        <pages-manage-customer-chat-queue-counter :admin-chat-queue="adminChatQueue" />
+        <!-- <pages-manage-customer-chat-queue-counter :admin-chat-queue="adminChatQueue" /> -->
       </template>
     </div>
   </div>
@@ -47,6 +47,25 @@ const adminChatQueue = ref<AdminChatQueue>()
 const activeChatData = ref<ChatRoom | null>()
 const activeChatDetails = ref<ChatRoomDetails>()
 const activeChatDetailsPagination = ref()
+
+const { data: chatRooms, pending: pendingChatRooms } = await useAsyncData('chatRooms', () =>
+  useApi<Response<ChatRoom[]>>('/admin/chat-rooms', {
+    method: 'GET',
+  }).then((res) => res.data.value?.data)
+)
+
+watchEffect(() => {
+  if (Array.isArray(chatRooms.value)) {
+    listChatRoom.value = [...chatRooms.value].sort(sortChatRoom)
+  }
+})
+
+function sortChatRoom(a: ChatRoom, b: ChatRoom) {
+  if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') return -1
+  if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') return 1
+  return b.last_message.created_at - a.last_message.created_at
+}
+
 
 function toggleGlobalLoading(loadingValue: boolean) {
   globalLoading.value = loadingValue
@@ -118,35 +137,36 @@ async function fetchChatRoomDetails(nextCursor: string = '') {
   }
 }
 
-const { data, pending } = await useApi<Response<ChatRoom[]>>('/admin/chat-rooms', {
-  method: 'GET',
-})
+// const { data, pending } = await useApi<Response<ChatRoom[]>>('/admin/chat-rooms', {
+//   method: 'GET',
+// })
 
-const { data: adminChatQueueData, pending: adminChatQueuePending } = await useApi<Response<AdminChatQueue>>(
-  '/admin/chats/admin-queues',
-  {
-    method: 'GET',
-  }
-)
 
-watch(
-  [data, adminChatQueueData],
-  (_) => {
-    adminChatQueue.value = adminChatQueueData.value?.data
-    listChatRoom.value = data.value?.data ?? []
-    listChatRoom.value.sort((a, b) => {
-      if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
-        return -1
-      } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
-        return 1
-      } else {
-        return b.last_message.created_at - a.last_message.created_at
-      }
-    });
-    console.log(listChatRoom.value)
-  },
-  { immediate: true }
-)
+// const { data: adminChatQueueData, pending: adminChatQueuePending } = await useApi<Response<AdminChatQueue>>(
+//   '/admin/chats/admin-queues',
+//   {
+//     method: 'GET',
+//   }
+// )
+
+// watch(
+//   [data, adminChatQueueData],
+//   (_) => {
+//     adminChatQueue.value = adminChatQueueData.value?.data
+//     listChatRoom.value = data.value?.data ?? []
+//     listChatRoom.value.sort((a, b) => {
+//       if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
+//         return -1
+//       } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
+//         return 1
+//       } else {
+//         return b.last_message.created_at - a.last_message.created_at
+//       }
+//     });
+//     console.log(listChatRoom.value)
+//   },
+//   { immediate: true }
+// )
 
 watch(activeChatData, (_) => {
   socket.off('receive-message')
