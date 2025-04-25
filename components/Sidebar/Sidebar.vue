@@ -45,6 +45,17 @@ const menu = <Section[] | Link[]>[
     to: "/customer",
     icon: "uil:user",
   },
+  {
+   label: " Manage Customers",
+   to: "/listcustomer",
+   icon: "uil:user",
+  },
+  {
+    label: "Manage oles",
+    to: "/rolesUser",
+    icon: "uil:user-check",
+  },
+
   // {
   //   label: "sidebar.catalog_input",
   //   icon: "uil:file", 
