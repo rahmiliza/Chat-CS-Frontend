@@ -152,17 +152,17 @@ import type {
   ChatRoom,
   ChatRoomDetails,
   Chat,
-  UpsertResponse,
-  CursorPaginationResponse,
-  TemporaryFileUpload,
-  User,
-  Option,
+  // UpsertResponse,
+  // CursorPaginationResponse,
+  // TemporaryFileUpload,
+  // User,
+  // Option,
 } from '~/models/chat'
 
 interface Props {
   activeChatData?: ChatRoom | null
   activeChatDetails: ChatRoomDetails
-  activeChatDetailsPagination?: CursorPaginationResponse
+  // activeChatDetailsPagination?: CursorPaginationResponse
   listChatRoom?: ChatRoom[]
   chattingContainerLoading: boolean
 }
