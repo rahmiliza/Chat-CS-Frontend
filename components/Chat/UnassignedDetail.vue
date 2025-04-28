@@ -102,7 +102,7 @@
     </template>
   </modals>
 
-  <UIConfirmModal v-model="showConfirm" title="Chat Acceptance Confirmation" message="Will you accept this chat?"
+  <UIConfirmModal v-model="showConfirm" class="text-lg font-bold" title="Chat Acceptance Confirmation" message="Will you accept this chat?"
     @confirm="handleOkAddNewParticipant"/>
 </template>
 
