@@ -53,41 +53,6 @@
           <ChatUnassignedBubble :chat="chat" :active-chat-details="activeChatDetails" />
         </template>
       </div>
-      <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat::store">
-        <div class="flex gap-1 items-center pl-2">
-          <Menu>
-            <div>
-              <MenuButton class="inline-flex w-full relative">
-                <fa-icon icon="paperclip"
-                  class="font-bold p-2 rounded-lg text-xl text-red-600 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-red-300/50" />
-              </MenuButton>
-            </div>
-
-            <transition enter-active-class="transition duration-100 ease-out"
-              enter-from-class="transform scale-95 opacity-0" enter-to-class="transform scale-100 opacity-100"
-              leave-active-class="transition duration-75 ease-in" leave-from-class="transform scale-100 opacity-100"
-              leave-to-class="transform scale-95 opacity-0">
-              <MenuItems
-                class="absolute z-50 left-[12px] bottom-[48px] mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                <div class="px-1 py-1">
-                  <MenuItem v-slot="{ active }">
-                  <button :class="[
-                    active ? 'bg-red-500 text-white' : 'text-black',
-                    'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                  ]" @click="triggerFileInputClick">
-                    <fa-icon icon="image" class="mr-2" :class="active ? 'bg-red-500 text-white' : 'text-red-600'" />
-                    Image
-                  </button>
-                  </MenuItem>
-                </div>
-              </MenuItems>
-            </transition>
-          </Menu>
-          <input v-model="message" placeholder="Enter Message"
-            class="w-full p-2 dark:bg-slate-900 bg-slate-100 rounded-lg text-black border border-slate-400 resize-none overflow-hidden max-h-20 text-sm outline-none focus:border-red-500"
-            rows="1" @keydown.enter="() => handleRequestSendMessage('TEXT')" />
-        </div>
-      </DPermissionGuard> 
     </div>
   </div>
   <div v-if="uploadedFiles.length > 0"

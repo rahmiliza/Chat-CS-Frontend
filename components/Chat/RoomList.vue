@@ -9,7 +9,7 @@
           " @click="handleAddAdminChatIndex" />
       </DPermissionGuard>
     </div> -->
-    <div class="h-[calc(100%-56px)] mt-4 pr-4 overflow-y-auto">
+    <div class="h-full mt-4 pr-4 overflow-y-auto">
       <template v-if="listChatRoom?.length > 0">
         <template v-for="chatRoomData in listChatRoom" :key="chatRoomData?.id">
           <ChatRoomInfo :chat-room-data="chatRoomData" :active-chat-data="activeChatData"
