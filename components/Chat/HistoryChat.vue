@@ -9,13 +9,13 @@
         @update-admin-chat-queue="updateAdminChatQueue" @toggle-global-loading="toggleGlobalLoading"
         @update-chat-list-data="updateChatListData" @update-active-chat-details="updateActiveChatDetails" />
       <template v-if="activeChatData && activeChatDetails">
-        <ChatUnassignedDetail :active-chat-data="activeChatData" :active-chat-details="activeChatDetails"
+      <ChatHistoryChatting :active-chat-data="activeChatData" :active-chat-details="activeChatDetails"
           :chatting-container-loading="chattingContainerLoading"
           :active-chat-details-pagination="activeChatDetailsPagination" :list-chat-room="listChatRoom"
-          @update-active-chat="handleSetActiveChatData" @update-active-chat-details="updateActiveChatDetails"
+           @update-active-chat="handleSetActiveChatData" @update-active-chat-details="updateActiveChatDetails"
           @update-chatting-container-loading="toggleChattingContainerLoading"
           @update-chat-list-data="updateChatListData" @toggle-global-loading="toggleGlobalLoading"
-          @trigger-fetch-chat-room-details="triggerFetchChatRoomDetails" />
+          @trigger-fetch-chat-room-details="triggerFetchChatRoomDetails" /> 
       </template>
       <template v-else>
         <pages-manage-customer-chat-queue-counter :admin-chat-queue="adminChatQueue" />
