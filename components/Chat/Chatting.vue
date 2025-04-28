@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col grow relative h-full">
+  <div class="flex flex-col grow relative h-full" v-if="activeChatDetails?.chat_room?.status !== 'CLOSED'">
     <template v-if="chattingContainerLoading">
       <LoadingIndicator />
     </template>
@@ -83,7 +83,7 @@
           </transition>
         </Menu>
         <input v-model="message" placeholder="Enter Message"
-          class="w-full p-2 dark:bg-slate-900 bg-slate-100 rounded-lg text-black border border-slate-400 resize-none overflow-hidden max-h-20 text-sm outline-none focus:border-blue-500"
+          class="w-full p-2 dark:bg-white bg-slate-100 rounded-lg text-black border border-slate-400 resize-none overflow-hidden max-h-20 text-sm outline-none focus:border-blue-500"
           rows="1" @keydown.enter="() => handleRequestSendMessage('TEXT')" />
       </div>
       <!-- </DPermissionGuard> -->
@@ -391,8 +391,8 @@ async function handleFinishChat() {
   emits('toggleGlobalLoading', true)
 
   try {
-    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('/chats/finish', {
-      method: 'PUT',
+    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('/admin/chat-rooms/' + activeChatDetails?.chat_room?.id + '/close_chat', {
+      method: 'POST',
       body: {
         room_id: props.activeChatDetails?.chat_room?.id,
       },
