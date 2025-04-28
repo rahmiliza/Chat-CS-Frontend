@@ -17,5 +17,5 @@ export const formatDatetime = (dateRaw: number): string => {
   const dayjs = useDayjs();
   dayjs.extend(utc);
   dayjs.extend(timezone);
-  return dayjs.utc(dateRaw).tz('Asia/Taipei').format('YYYY-MM-DD HH:mm:ss');
+  return dayjs.unix(dateRaw).tz('Asia/Taipei').format('YYYY-MM-DD HH:mm:ss');
 };
