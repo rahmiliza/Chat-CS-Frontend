@@ -51,7 +51,7 @@ const menu = <Section[] | Link[]>[
    icon: "uil:user",
   },
   {
-    label: "Manage oles",
+    label: "Manage Roles",
     to: "/rolesUser",
     icon: "uil:user-check",
   },
