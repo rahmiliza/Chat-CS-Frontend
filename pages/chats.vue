@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col w-full h-full -mt-4">
+    <div class="flex flex-col w-full h-full -mt-5">
       <div class="flex border-b">
         <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = index" :class="[
           'relative px-4 py-2 font-medium',
