@@ -14,7 +14,7 @@
               .join(', ')
           }}
         </template>
-        <template v-else>
+        <template v-else class= "text-black">
           {{ activeChat?.participant[getOtherParticipantIndex()]?.display_name }}
         </template>
       </div>
