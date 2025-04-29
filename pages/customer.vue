@@ -1,6 +1,6 @@
 <template>
   <div class="w-full px-2">
-    <template v-if="activeChat && activeChat.status !== 'closed'">
+    <template v-if="activeChat">
       <ChatCustomersChattingContainer
         ref="chatting"
         :active-chat="activeChat"
@@ -17,13 +17,8 @@
       />
     </template>
 
-    <!-- Display a message or a placeholder for closed chat rooms -->
-    <!-- <div v-else>
-      <p class="text-center text-gray-500">This chat room is closed.</p>
-    </div> -->
-
     <div
-      v-else-if="!activeChat"
+      v-else
       class="max-w-[400px] mx-auto flex flex-col items-center justify-center gap-4 dark:text-black text-black"
     >
       <textarea
@@ -41,7 +36,6 @@
     </div>
   </div>
 </template>
-
 
 <script lang="ts" setup>
 import { io } from 'socket.io-client'
@@ -71,28 +65,17 @@ const fetchExistingChatRoom = async () => {
       useApi<Response<ChatRoom[]>>(`/chat-rooms?skip_closed=true&participantID=${user?.id}`, {
         method: 'GET',
       }).then(res => res.data.value?.data ?? [])
-    );
+    )
 
-    if (data.value?.data) {
-      // Filter out closed chat rooms
-      const openChatRooms = data.value.data.filter(chatRoom => chatRoom.status !== 'closed');
-      
-      if (openChatRooms.length > 0) {
-        activeChat.value = openChatRooms[0]; // Set the first open chat room
-        await fetchActiveChatDetails();
-      } else {
-        activeChat.value = null; // No open chat rooms
-      }
+    if (data.value && data.value.length > 0) {
+      activeChat.value = data.value[0]
     } else {
-      activeChat.value = null; // No data, set as null
+      activeChat.value = null
     }
-    
   } catch (e) {
-    toast.add({ message: 'Gagal mengambil chat room.', type: 'error' });
+    toast.add({ message: 'Gagal mengambil chat room.', type: 'error' })
   }
-};
-
-
+}
 
 await fetchExistingChatRoom()
 
@@ -170,3 +153,4 @@ onUnmounted(() => {
   socket.disconnect()
 })
 </script>
+
