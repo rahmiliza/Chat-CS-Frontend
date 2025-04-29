@@ -196,42 +196,6 @@ const handleAssigned = () => {
   showConfirm.value = true
 }
 
-async function handleFileInput(event: Event) {
-  const tempId = Math.random().toString(36).substr(2)
-  const target = event.target as HTMLInputElement
-
-  if (target.files && target.files[0]) {
-    uploadedFiles.value = []
-    uploadedFiles.value = [
-      {
-        id: tempId,
-        type: 'x-temporary',
-        loading: true,
-      },
-    ]
-
-    const payload = new FormData()
-
-    payload.append('file', target.files[0])
-
-    try {
-      const { data } = await useApi<UpsertResponse<TemporaryFileUpload>>('/storage/temporary', {
-        method: 'POST',
-        body: payload,
-      })
-
-      uploadedFiles.value[0].url = data.value?.data?.url
-      uploadedFiles.value[0].id = data.value?.data?.id
-    } catch (error) {
-      uploadedFiles.value[0].error = true
-    } finally {
-      uploadedFiles.value[0].loading = false
-    }
-  }
-
-  target.value = ''
-}
-
 function emitLoading(isLoading: boolean) {
   emits('updateChattingContainerLoading', isLoading)
 }
@@ -354,55 +318,6 @@ async function handleRequestSendMessage(message_type: 'TEXT' | 'IMAGE' = 'TEXT')
     toast.add({ message: errMsg, type: "error" })
   } finally {
     emitLoading(false)
-  }
-}
-
-async function handleFinishChat() {
-  emits('toggleGlobalLoading', true)
-
-  try {
-    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('/admin/chat-rooms/' + activeChatDetails?.chat_room?.id + '/close-chat', {
-      method: 'PUT',
-      body: {
-        room_id: props.activeChatDetails?.chat_room?.id,
-      },
-    })
-
-    if (data.value?.ok) {
-      const chatIndex = props?.listChatRoom?.findIndex((item) => item?.id === props?.activeChatDetails?.chat_room?.id)
-
-      if (chatIndex !== undefined && chatIndex > -1 && props.listChatRoom) {
-        socket.emit(
-          'finish-chat-room',
-          props?.activeChatDetails?.chat_room?.id,
-          props?.activeChatDetails?.chat_room?.participant?.[getOtherParticipantIndex()]?.user_id ?? ''
-        )
-
-        const tempListChat = [...props.listChatRoom]
-        tempListChat[chatIndex] = { ...tempListChat[chatIndex], ...data.value?.data }
-
-        // Sorting listChatRoom based on last_message.created_at and status
-        tempListChat.sort((a, b) => {
-          if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
-            return -1
-          } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
-            return 1
-          } else {
-            return b.last_message.created_at - a.last_message.created_at
-          }
-        })
-        emits('updateChatListData', tempListChat)
-        emits('updateActiveChat', null)
-      }
-    } else {
-      const errMsg = error.value?.data?.message ?? 'An Error was Accrued, Please try again'
-      toast.add({ message: errMsg, type: "error" })
-    }
-  } catch (e: any) {
-    const errMsg = e?.value?.data?.message || 'An Error was Accrued, Please try again'
-    toast.add({ message: errMsg, type: "error" })
-  } finally {
-    emits('toggleGlobalLoading', false)
   }
 }
 </script>
