@@ -6,7 +6,7 @@
 
     <div class=" w-full flex justify-between items-center border-b border-slate-300/50 px-2 py-3 bg-blue-400/20">
       <div class="w-full text font-semibold truncate ml-2 text-gray-800">
-        
+
         <template v-if="activeChatData?.participant && activeChatData.participant.length > 2">
           {{
             activeChatData?.participant
@@ -31,7 +31,7 @@
         <UITooltip tooltip-text="Finish Chat" direction="bottom-right">
           <Icon name="hugeicons:flag-01"
             class="font-bold p-2 rounded-lg text-2xl text-blue-500 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-blue-800"
-            @click="handleFinishChat" />
+            @click="showFinishConfirm = true" />
         </UITooltip>
         <!-- </DPermissionGuard> -->
         <UITooltip tooltip-text="Minimize Chat" direction="bottom-right">
@@ -46,7 +46,8 @@
       </div>
     </div>
     <div class="w-full flex flex-col flex-1">
-      <div ref="chatList" v-scroll="onScroll" class="h-full w-full bg-blue-50/20 overflow-y-auto flex flex-col-reverse p-4 gap-2">
+      <div ref="chatList" v-scroll="onScroll"
+        class="h-full w-full bg-blue-50/20 overflow-y-auto flex flex-col-reverse p-4 gap-2">
         <template v-for="chat in activeChatDetails?.chats" :key="chat?.id">
           <ChatBubble :chat="chat" :active-chat-details="activeChatDetails" />
         </template>
@@ -136,6 +137,10 @@
       </div>
     </template>
   </modals>
+
+
+  <UIConfirmModal v-model="showFinishConfirm" class="text-lg font-bold" title="Chat Acceptance Confirmation"
+    message="Will you accept this chat?" @confirm="handleFinishChat" />
 </template>
 
 <script setup lang="ts">
@@ -158,6 +163,7 @@ import type {
   // User,
   // Option,
 } from '~/models/chat'
+import type { Response } from '~/models/response'
 
 interface Props {
   activeChatData?: ChatRoom | null
@@ -180,7 +186,7 @@ const emits = defineEmits([
 
 const { user } = useAuthStore();
 const toast = useToast();
-
+const showFinishConfirm = ref(false)
 const {
   public: { socketUrl },
 } = useRuntimeConfig()
@@ -329,7 +335,7 @@ async function handleOkAddNewParticipant() {
     }
     else if (data.value?.status === false) {
       toast.add({ message: 'Participant already exists in this chat', type: "error" })
-    }  
+    }
     else {
       const errMsg = error.value?.data?.message ?? 'Failed to add participant, please try again1'
       toast.add({ message: errMsg, type: "error" })
@@ -391,7 +397,7 @@ async function handleFinishChat() {
   emits('toggleGlobalLoading', true)
 
   try {
-    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('/admin/chat-rooms/' + activeChatDetails?.chat_room?.id + '/close_chat', {
+    const { data, error } = await useApi<Response<ChatRoom>>('/admin/chat-rooms/' + props.activeChatDetails?.chat_room?.id + '/close-chat', {
       method: 'POST',
       body: {
         room_id: props.activeChatDetails?.chat_room?.id,
