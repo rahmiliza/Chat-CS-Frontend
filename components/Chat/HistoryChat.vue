@@ -1,6 +1,6 @@
 <template>
-  <div class="w-full h-full">
-    <template v-if="pending || adminChatQueuePending || globalLoading">
+  <div class="w-full h-[calc(100%-34px)]">
+    <template v-if="globalLoading">
       <LoadingIndicator />
     </template>
     <div class="w-full h-full flex bg-white overflow-hidden min-w-[800px]">
@@ -18,7 +18,6 @@
           @trigger-fetch-chat-room-details="triggerFetchChatRoomDetails" /> 
       </template>
       <template v-else>
-        <pages-manage-customer-chat-queue-counter :admin-chat-queue="adminChatQueue" />
       </template>
     </div>
   </div>
@@ -136,108 +135,11 @@ async function fetchChatRoomDetails(nextCursor: string = '') {
   }
 }
 
-// const { data, pending } = await useApi<Response<ChatRoom[]>>('/admin/chat-rooms', {
-//   method: 'GET',
-// })
-
-// const { data: adminChatQueueData, pending: adminChatQueuePending } = await useApi<UpsertResponse<AdminChatQueue>>(
-//   '/admin/chats/admin-queues',
-//   {
-//     method: 'GET',
-//   }
-// )
-
-// watch(
-//   [data, adminChatQueueData],
-//   (_) => {
-//     adminChatQueue.value = adminChatQueueData.value?.data
-//     listChatRoom.value = data.value?.data ?? []
-//     listChatRoom.value.sort((a, b) => {
-//       if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
-//         return -1
-//       } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
-//         return 1
-//       } else {
-//         return b.last_message.created_at - a.last_message.created_at
-//       }
-//     });
-//     console.log(listChatRoom.value)
-//   },
-//   { immediate: true }
-// )
-
-watch(activeChatData, (_) => {
-  socket.off('receive-message')
-
-  socket.emit('join-room', user?.id)
-
-  if (activeChatData.value) {
-    socket.emit('join-room', activeChatData.value?.id)
-  }
-
-  socket.on('receive-message', (lastMessage: Chat) => {
-    if (activeChatDetails.value?.chat_room?.id !== lastMessage?.chat_room_id) return
-
-    activeChatDetails.value?.chats?.splice(0, 0, lastMessage)
-
-    const lastMessageIndexRoom = listChatRoom.value?.findIndex((item) => item?.id === lastMessage?.chat_room_id)
-
-    if (lastMessageIndexRoom > -1 && listChatRoom.value[lastMessageIndexRoom]) {
-      listChatRoom.value[lastMessageIndexRoom].last_message = { ...lastMessage }
-
-      // Sorting listChatRoom based on last_message.created_at and status
-      listChatRoom.value.sort((a, b) => {
-        if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
-          return -1
-        } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
-          return 1
-        } else {
-          return b.last_message.created_at - a.last_message.created_at
-        }
-      })
-    }
-  })
-})
 
 onMounted(() => {
-  socket.on('connection', () => { })
-
-  socket.emit('join-room', user?.id)
-
-  socket.on('receive-new-message-queue', (newSubmittedMsgQueue: ChatQueue[] | string) => {
-    if (adminChatQueue.value) {
-      if (typeof newSubmittedMsgQueue === 'string') {
-        adminChatQueue.value.queue = JSON.parse(newSubmittedMsgQueue)
-      } else {
-        adminChatQueue.value.queue = [...newSubmittedMsgQueue]
-      }
-    }
-  })
-
-  socket.on('chat-room', (chatRoom: ChatRoom) => {
-    if (listChatRoom.value.findIndex((item) => item?.id === chatRoom?.id) < 0) {
-      listChatRoom.value.push(chatRoom)
-    } else {
-      listChatRoom.value[listChatRoom.value.findIndex((item) => item?.id === chatRoom?.id)] = { ...chatRoom }
-    }
-
-    // Sorting listChatRoom based on last_message.created_at and status
-    listChatRoom.value.sort((a, b) => {
-      if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
-        return -1
-      } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
-        return 1
-      } else {
-        return b.last_message.created_at - a.last_message.created_at
-      }
-    })
-  })
 })
 
 onUnmounted(() => {
-  socket.off('receive-new-message-queue')
-  socket.off('receive-message')
-  socket.disconnect()
 })
 
 onBeforeMount(() => {
