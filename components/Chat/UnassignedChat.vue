@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full">
+  <div class="w-full  h-[calc(100%-34px)]">
     <template v-if="pending || adminChatQueuePending || globalLoading">
       <LoadingIndicator />
     </template>

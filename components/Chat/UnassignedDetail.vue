@@ -47,7 +47,7 @@
         </UITooltip>
       </div>
     </div>
-    <div class="w-full flex flex-col flex-1">
+    <div class="w-full flex flex-col flex-1 h-[calc(100%-50px)]">
       <div ref="chatList" v-scroll="onScroll" class="h-full w-full overflow-y-auto flex flex-col p-4 gap-2">
         <template v-for="chat in activeChatDetails?.chats" :key="chat?.id">
           <ChatUnassignedBubble :chat="chat" :active-chat-details="activeChatDetails" />
@@ -62,7 +62,7 @@
         <LoadingIndicator />
       </div>
       <div class="mt-4 pr-4 flex items-center justify-end">
-        <fa-icon icon="xmark" class="text-2xl hover:cursor-pointer hover:text-red-500 active:text-red-700" @click="
+        <Icon name="hugeicons:cancel-01" class="text-2xl hover:cursor-pointer hover:text-red-500 active:text-red-700" @click="
           () => {
             uploadedFiles = []
           }
@@ -85,22 +85,22 @@
   <input ref="fileInput" type="file" accept="image/*" :multiple="false" class="hidden" @input="handleFileInput" />
 
   <!-- * Modal Adding Participant -->
-  <modals v-model="openModalAddNewParticipant" modal-title="Add Participant" :show-overflow="true"
+  <UIModals v-model="openModalAddNewParticipant" modal-title="Add Participant" :show-overflow="true"
     :on-ok="handleOkAddNewParticipant" :on-close-modal="handleCloseModalAddNewParticipant"
     :disabled-btn-ok="!selectedParticipantToAddToChat">
     <template #modal-content>
       <div class="w-[400px] h-[80px] select-none overflow-y-visible">
         <template v-if="loadingGetListAdmin">
-          <shell-indicator-skeleton />
+          <UISkeleton />
         </template>
         <template v-else>
           <div class="mt-2 mb-1 text-gray-500 text-sm">Admin</div>
-          <input-select v-model="selectedParticipantToAddToChat" placeholder="Choose one Admin"
+          <UISelect v-model="selectedParticipantToAddToChat" placeholder="Choose one Admin"
             :options="listAdminOptions" />
         </template>
       </div>
     </template>
-  </modals>
+  </UIModals>
 
   <UIConfirmModal v-model="showConfirm" class="text-lg font-bold" title="Chat Acceptance Confirmation" message="Will you accept this chat?"
     @confirm="handleOkAddNewParticipant"/>
