@@ -1,45 +1,45 @@
 <template>
   <div class="w-96 h-full flex flex-col border-r border-slate-300/50">
-    <!-- <div class="h-14 flex justify-between items-center border-b border-black px-2 pb-1">
-      <div class="text-2xl font-bold">Chats</div>
+    <div class="h-14 flex justify-between items-center border-b-2 border-slate-400 px-2 pb-1">
+      <div class="text-lg font-medium text-slate-500 my-5">
+        Direct Message
+      </div>
+
       <DPermissionGuard permission="chat_room::assign">
-        <Icon name="uil:comment-plus" size="1.5rem" class="font-bold p-2 rounded-lg text-2xl" :class="!adminChatQueue?.queue?.length || listChatRoom.filter((chatRoom) => !chatRoom.closed_at).length >= 3
-          ? 'text-slate-400 cursor-not-allowed'
-          : 'text-red-600 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-red-300/50'
-          " @click="handleAddAdminChatIndex" />
+        <Icon
+          name="uil:comment-plus"
+          size="1.8rem"
+          class="font-extrabold p-2 rounded-lg text-2xl text-slate-600 hover:cursor-pointer hover:brightness-200 active:brightness-90 hover:bg-red-900"
+          @click="handleCreateChat"
+        />
       </DPermissionGuard>
-    </div> -->
+    </div>
     <div class="h-full my-4 pr-4 flex flex-col gap-2.5 overflow-y-auto">
       <template v-if="listChatRoom?.length > 0">
-        <template v-for="chatRoomData in listChatRoom" :key="chatRoomData?.id">
+        <template v-for="chatRoomData in listChatRoom" :key="chatRoomData?.id" class="dark:text-black text-black">
           <ChatRoomInfo :chat-room-data="chatRoomData" :active-chat-data="activeChatData"
             @update-active-chat="$emit('update-active-chat', $event)"
-            @update-active-chat-details="$emit('updateActiveChatDetails', $event)" />
+            @update-active-chat-details="$emit('updateActiveChatDetails', $event)" class="dark:text-black text-black " />
         </template>
       </template>
       <template v-else>
         <div class="flex justify-center items-center h-full text-gray-400">No Chat</div>
       </template>
     </div>
-    <div class="flex flex-col">
-      <button
-        class="h-10 mr-4 bg-white border rounded-lg hover:bg-blue-600 active:bg-blue-700 hover:text-white transition duration-200 ease-in-out"
-        @click="handleCreateChat">Create New Chat</button>
-    </div>
   </div>
 
   <UIModals v-model="openModalCreateChat" modal-title="Create New Chat" :show-overflow="true"
     :on-ok="handleOkCreateChat" :on-close-modal="handleCloseModalCreateChat"
-    :disabled-btn-ok="!selectedParticipantToAddToChat">
+    :disabled-btn-ok="!selectedParticipantToAddToChat" class="dark:text-black">
     <template #modal-content>
       <div class="w-[400px] h-[80px] select-none overflow-y-visible">
         <template v-if="loadingGetListCustomer">
           <UISkeleton />
         </template>
         <template v-else>
-          <div class="mt-2 mb-1 text-gray-500 text-sm">Customer</div>
+          <div class="mt-2 mb-1  text-medium text-gray-600 text-lg">Add Customer</div>
           <UISelect v-model="selectedParticipantToAddToChat" placeholder="Choose one Customer"
-            :options="listCustomerOpt" />
+            :options="listCustomerOpt"  class="text-medium text-lg"/>
         </template>
       </div>
     </template>
@@ -104,10 +104,8 @@ async function handleAddAdminChatIndex() {
     return
   }
 
-  emits('toggleGlobalLoading', true)
-
   try {
-    const { data, error } = await useApi<Response<AdminChatQueueExtended>>('/chats/assign', {
+    const { data, error } = await useApi<Response<AdminChatQueueExtended>>('admin/chat-rooms/', {
       method: 'POST',
     })
 
