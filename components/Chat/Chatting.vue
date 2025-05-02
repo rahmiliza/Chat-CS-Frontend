@@ -123,16 +123,16 @@
   <!-- * Modal Adding Participant -->
   <UIModals v-model="openModalAddNewParticipant" modal-title="Add Participant" :show-overflow="true"
     :on-ok="handleOkAddNewParticipant" :on-close-modal="handleCloseModalAddNewParticipant"
-    :disabled-btn-ok="!selectedParticipantToAddToChat">
+    :disabled-btn-ok="!selectedParticipantToAddToChat" class="dark:text-black">
     <template #modal-content>
       <div class="w-[400px] h-[80px] select-none overflow-y-visible">
         <template v-if="loadingGetListAdmin">
           <UISkeleton />
         </template>
         <template v-else>
-          <div class="mt-2 mb-1 text-gray-500 text-sm">Admin</div>
+          <div class="mt-2 mb-1 text-slate-700 text-xl py-2">Admin</div>
           <UISelect v-model="selectedParticipantToAddToChat" placeholder="Choose one Admin"
-            :options="listAdminOptions" />
+            :options="listAdminOptions" class="text-lg"/>
         </template>
       </div>
     </template>
