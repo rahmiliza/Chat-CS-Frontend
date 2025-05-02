@@ -1,11 +1,11 @@
 <template>
     <div class="flex flex-col w-full h-full -mt-5">
-      <div class="flex border-b">
+      <div class="flex border-b-2 border-slate-400">
         <button v-for="(tab, index) in tabs" :key="index" @click="activeTab = index" :class="[
-          'relative px-4 py-2 font-medium',
+          'relative px-4 py-2 font-bold ',
           activeTab === index
-            ? 'border-b-2 border-blue-500 text-blue-600'
-            : 'text-gray-500 hover:text-blue-500'
+            ? 'border-b-2 border-blue-500 text-blue-600 text-xl'
+            : 'text-gray-500 hover:text-blue-500 text-lg'
         ]">
           {{ tab.label }}
           <!-- <div class="absolute top-0 right-0 rounded-full bg-red-500 text-white text-[8px] flex items-center justify-center px-0.5">242</div> -->
