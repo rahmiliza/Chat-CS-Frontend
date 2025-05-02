@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full h-full">
+  <div class="w-full h-[calc(100%-34px)]">
     <template v-if="pendingChatRooms || globalLoading">
       <LoadingIndicator />
     </template>
@@ -136,37 +136,6 @@ async function fetchChatRoomDetails(nextCursor: string = '') {
     chattingContainerLoading.value = false
   }
 }
-
-// const { data, pending } = await useApi<Response<ChatRoom[]>>('/admin/chat-rooms', {
-//   method: 'GET',
-// })
-
-
-// const { data: adminChatQueueData, pending: adminChatQueuePending } = await useApi<Response<AdminChatQueue>>(
-//   '/admin/chats/admin-queues',
-//   {
-//     method: 'GET',
-//   }
-// )
-
-// watch(
-//   [data, adminChatQueueData],
-//   (_) => {
-//     adminChatQueue.value = adminChatQueueData.value?.data
-//     listChatRoom.value = data.value?.data ?? []
-//     listChatRoom.value.sort((a, b) => {
-//       if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
-//         return -1
-//       } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
-//         return 1
-//       } else {
-//         return b.last_message.created_at - a.last_message.created_at
-//       }
-//     });
-//     console.log(listChatRoom.value)
-//   },
-//   { immediate: true }
-// )
 
 watch(activeChatData, (_) => {
   socket.off('receive-message')
