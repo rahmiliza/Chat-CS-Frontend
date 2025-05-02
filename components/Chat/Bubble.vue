@@ -32,7 +32,7 @@
   </div>
 
   <!--* Show Attachment Modal -->
-  <modals v-model="showModalAttachment" modal-title="Attachment" :footer="false" :on-close-modal="() => {
+  <UIModals v-model="showModalAttachment" modal-title="Attachment" :footer="false" :on-close-modal="() => {
     selectedAttachmentUrl = ''
     showModalAttachment = false
   }
@@ -44,7 +44,7 @@
         }"></div>
       </div>
     </template>
-  </modals>
+  </UIModals>
 </template>
 
 <script setup lang="ts">
