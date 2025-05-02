@@ -187,7 +187,7 @@ async function handleOkCreateChat() {
   emitLoading(true)
 
   try {
-    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('/chats/add-participant', {
+    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('/admin/chat-rooms/', {
       method: 'POST',
       body: {
         room_id: props?.activeChatData?.id ?? '',
