@@ -28,7 +28,7 @@
             {{ chatRoomData?.last_message?.message }}
           </div>
           <div v-else class="flex gap-1 items-center text-slate-500">
-            <fa-icon icon="image" />
+            <Icon name="hugeicons:image-03" />
             <div class="text-sm">Image</div>
           </div>
         </div>
