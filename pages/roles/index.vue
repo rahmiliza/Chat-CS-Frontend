@@ -1,23 +1,84 @@
 <template>
   <div class="w-full h-full">
-    <div v-if="pending || pendingPermissions || loading">
+    <div v-if="loading">
       <LoadingIndicator />
     </div>
 
-    <!-- <template #right-toolbar>
-      <shell-toolbar-search-bar @submit="(q) => handleSearchBar(q)" />
+    <div class="flex items-center justify-end mb-4 -mt-12">
+      <div class="flex items-center gap-2">
+        <UISearchBar @submit="(q) => handleSearchBar(q)" />
+        <button
+          class="flex gap-1 bg-blue-500 px-4 py-2 text-white leading-2 rounded-md hover:bg-blue-600 active:bg-blue-700"
+          @click="
+            () => {
+              formUserInputForEditingRole.name = ''
+              formUserInputForEditingRole.permissions = []
+              openModalCreatingNewRole = true
+            }
+          ">
+          <Icon name="uil:plus" class="text-2xl" />
+          Role
+        </button>
+      </div>
+    </div>
 
-      <button class="w-20 bg-red-500 p-2 text-white rounded-lg hover:bg-red-600 active:bg-red-700" @click="
-        () => {
-          formUserInputForEditingRole.name = ''
-          formUserInputForEditingRole.permissions = []
-          openModalCreatingNewRole = true
-        }
-      ">
-        <Icon name="uil:plus" />
-        Role
-      </button>
-    </template> -->
+    <div class="min-w-full align-middle relative min-h-full inline-flex flex-col justify-between">
+      <DataTable :columns="[
+        { key: 'name', label: 'Role Name', cellClass: 'border-b border-gray-200 text-left dark:border-gray-700 py-2' },
+        { key: 'created_at', label: 'Created At' },
+        { key: 'action', label: 'Action' },
+      ]" keyProp="id" :rows="listRoles" :loading="loading" :pagination="paginationParams"
+        :onRowExpand="handleGetRoleDetailData" expandable>
+        <template #cell-created_at="{ entry }">
+          <div class="whitespace-nowrap p-2 text-sm font-medium text-gray-900">
+            {{ formatDatetime(entry.created_at) }}
+          </div>
+        </template>
+        <template #cell-action="{ entry }">
+          <div class="flex items-center gap-2">
+            <UITooltip tooltip-text="Edit Roles" direction="bottom-right">
+              <Icon name="hugeicons:pen-01"
+                class="ml-auto font-bold p-2 rounded-lg text-2xl text-blue-500 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-blue-800"
+                @click="
+                  () => {
+                    getRolePermissions(entry?.id)
+                    selectedRole = entry
+                    openModalCreatingNewRole = true
+                    openModalEditingRole = true
+                  }
+                " />
+            </UITooltip>
+            <UITooltip tooltip-text="Delete Roles" direction="bottom-right">
+              <Icon name="hugeicons:delete-02"
+                class="ml-auto font-bold p-2 rounded-lg text-2xl text-blue-500 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-blue-800"
+                @click="
+                  () => {
+                    selectedRole = { ...entry }
+                    openModalDeleteRole = true
+                  }
+                " />
+            </UITooltip>
+          </div>
+        </template>
+        <template #detail="{ entry }">
+          <div class="p-4 max-h-[400px] overflow-auto">
+            <UISkeleton v-if="roleDetailData[entry?.id].pending === true" />
+            <div v-else class="w-[100%]">
+              <div class="p-4 bg-gray-100 rounded-md">
+                <h3 class="text-lg font-semibold mb-2">Role Permissions</h3>
+                <ul class="list-disc list-outside pl-6">
+                  <li v-for="permission in roleDetailData?.[entry?.id]?.data?.permissions ?? []" :key="permission.id"
+                    class="mb-1 p-2 rounded-lg border-b border-gray-300 hover:bg-gray-200">
+                    <div class="font-semibold">{{ permission.name }}.</div>
+                    <div class="text-sm text-gray-600">{{ permission.description }}</div>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </template>
+      </DataTable>
+    </div>
 
     <div class="min-w-full align-middle relative min-h-full inline-flex flex-col justify-between">
       <table class="min-w-full divide-y divide-gray-300">
@@ -25,16 +86,17 @@
           <tr>
             <th scope="col"
               class="sticky z-[1] top-0 bg-gray-200 bg-opacity-75 backdrop-blur backdrop-filter whitespace-nowrap p-2 text-left text-sm font-semibold text-gray-900">
+              fa
             </th>
             <th scope="col"
               class="sticky z-[1] top-0 bg-gray-200 bg-opacity-75 backdrop-blur backdrop-filter whitespace-nowrap px-2 text-left text-sm font-semibold text-gray-900 h-full"
-              @click="toggleSort('name')">a
+              @click="toggleSort('name')">Role Name
               <!-- <shell-table-sort-indicator :is-sorted="sortField === 'name'" :sort-direction="sortOrder"
                 column-title="Name" /> -->
             </th>
             <th scope="col"
               class="sticky z-[1] top-0 bg-gray-200 bg-opacity-75 backdrop-blur backdrop-filter whitespace-nowrap px-2 text-left text-sm font-semibold text-gray-900 h-full"
-              @click="toggleSort('created_at')">b
+              @click="toggleSort('created_at')">Created At
               <!-- <shell-table-sort-indicator :is-sorted="sortField === 'created_at'" :sort-direction="sortOrder"
                 column-title="Created At" /> -->
             </th>
@@ -55,7 +117,7 @@
                 {{ entry?.name }}
               </td>
               <td class="whitespace-nowrap p-2 text-sm font-medium text-gray-900 tabular-nums tracking-wider">
-                {{ formatUnixDate(entry.created_at) }}
+                {{ formatDatetime(entry.created_at) }}
               </td>
               <td class="p-2 pr-4 text-sm font-medium text-gray-900 w-0">
                 <Menu as="div" class="relative inline-block">
@@ -154,7 +216,7 @@
   </div>
 
   <!-- * Modal Creating & Editing New Role -->
-  <!-- <modals v-model="openModalCreatingNewRole" :modal-title="openModalEditingRole ? 'Edit Role' : 'Create New Role'"
+  <UIModals v-model="openModalCreatingNewRole" :modal-title="openModalEditingRole ? 'Edit Role' : 'Create New Role'"
     :on-ok="handleOkModalCreateNewRole" :on-close-modal="handleCloseModalCreateNewRole"
     :disabled-btn-ok="!formUserInputForEditingRole.name || formUserInputForEditingRole.permissions.length === 0">
     <template #modal-content>
@@ -185,21 +247,22 @@
             </div>
           </div>
           <div class="w-full ml-2 pl-4 pb-4 bg-slate-400/10 rounded-md overflow-y-auto">
-            <pages-manage-role-permission-list :modules="listPermissions"
+            <RolePermissionLists :modules="listPermissions"
               :form-user-input-for-editing-role="formUserInputForEditingRole"
               @update-form-user-input-for-editing-role="handleUpdateFormUserInputForEditingRole" />
           </div>
         </div>
       </div>
     </template>
-  </modals> -->
+  </UIModals>
 
-  <!-- * Modal Deleting Role -->
-  <!-- <modals-confirmation-modals v-model="openModalDeleteRole" desc="Are you sure you want to delete this role?"
-    title="Deleting Role" :on-ok="() => handleOkModalDeleteRole()" /> -->
+
+  <UIConfirmModal v-model="openModalDeleteRole" class="text-lg font-bold" title="Deleting Role"
+    message="Are you sure you want to delete this role?" @confirm="handleOkModalDeleteRole" />
 </template>
 
 <script setup lang="ts">
+import { RolePermissionLists } from '#components'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { toast } from 'vue3-toastify'
 import type { Pagination } from '~/components/DataTable/datatableMeta'
@@ -314,7 +377,7 @@ const getRolePermissions = async (roleId: string) => {
   loading.value = true
 
   try {
-    const { data } = await useApi<Response<RoleDetails>>(`/roles/${roleId}`, { method: 'GET' })
+    const { data } = await useApi<Response<RoleDetails>>(`/admin/roles/${roleId}`, { method: 'GET' })
     if (data.value?.data != null) {
       formUserInputForEditingRole.value.name = data.value.data.name
       formUserInputForEditingRole.value.permissions = data.value.data.permissions?.map((p) => p.id) ?? []
@@ -338,7 +401,7 @@ async function handleGetRoleDetailData(entry: Role | null | undefined, isRefresh
   }
 
   try {
-    const { data } = await useApi<Response<RoleDetails>>(`/roles/${entry?.id}`, { method: 'GET' })
+    const { data } = await useApi<Response<RoleDetails>>(`/admin/roles/${entry?.id}`, { method: 'GET' })
 
     if (data.value?.data != null) {
       roleDetailData.value[entry.id] = {
@@ -357,7 +420,7 @@ async function handleOkModalCreateNewRole() {
 
   try {
     const { data, error } = await useApi<Response<Role>>(
-      `/roles${openModalEditingRole.value ? `/${selectedRole.value?.id}` : ''}`,
+      `/admin/roles${openModalEditingRole.value ? `/${selectedRole.value?.id}` : ''}`,
       {
         method: openModalEditingRole.value ? 'PUT' : 'POST',
         body: {
@@ -398,7 +461,7 @@ async function handleOkModalDeleteRole() {
   loading.value = true
 
   try {
-    const { data, error } = await useApi<Response<Role>>(`/roles/${selectedRole.value?.id}`, {
+    const { data, error } = await useApi<Response<Role>>(`/admin/roles/${selectedRole.value?.id}`, {
       method: 'DELETE',
     })
 
@@ -434,14 +497,14 @@ function scrollToModule(module: string) {
   }
 }
 
-const { data, pending, error } = await useApi<ResponseWithPagination<Role[]>>('/roles', {
+const { data, pending, error } = await useApi<ResponseWithPagination<Role[]>>('/admin/roles', {
   method: 'GET',
   query: appliedFilter,
   params: paginationParams,
 })
 
 const { data: dataPermissions, pending: pendingPermissions } = await useApi<ResponseWithPagination<Permission>>(
-  '/permissions',
+  '/admin/permissions',
   {
     method: 'GET',
   }
