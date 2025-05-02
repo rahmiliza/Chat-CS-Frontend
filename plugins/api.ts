@@ -6,15 +6,21 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   const api = $fetch.create({
     baseURL: apiBaseUrl,
-    headers: {
-      Authorization: `Bearer ${bearerToken}`,
+    onRequest({ options }) {
+      const token = useAuthStore().bearerToken;
+      if (token) {
+        options.headers = {
+          ...options.headers,
+          Authorization: `Bearer ${token}`,
+        };
+      }
     },
     onResponseError: (error) => {
       if (error.response?.status === 401) {
         logout();
       }
       if (error.response?.status === 403) {
-        // Todo: Handle forbidden error
+        // TODO: Handle forbidden error
       }
     },
   });
