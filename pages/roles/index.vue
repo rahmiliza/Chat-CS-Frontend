@@ -8,7 +8,7 @@
       <div class="flex items-center gap-2">
         <UISearchBar @submit="(q) => handleSearchBar(q)" />
         <button
-          class="flex gap-1 bg-blue-500 px-4 py-2 text-white leading-2 rounded-md hover:bg-blue-600 active:bg-blue-700"
+          class="flex gap-1 dark:text-black bg-blue-500 px-4 py-2 text-white leading-2 rounded-md hover:bg-blue-600 active:bg-blue-700"
           @click="
             () => {
               formUserInputForEditingRole.name = ''
@@ -24,7 +24,7 @@
 
     <div class="min-w-full align-middle relative min-h-full inline-flex flex-col justify-between">
       <DataTable :columns="[
-        { key: 'name', label: 'Role Name', cellClass: 'border-b border-gray-200 text-left dark:border-gray-700 py-2' },
+        { key: 'name', label: 'Role Name', cellClass: 'border-b border-gray-200 text-left dark:border-gray-700 dark:text-black py-2' },
         { key: 'created_at', label: 'Created At' },
         { key: 'action', label: 'Action' },
       ]" keyProp="id" :rows="listRoles" :loading="loading" :pagination="paginationParams"
@@ -89,7 +89,7 @@
               fa
             </th>
             <th scope="col"
-              class="sticky z-[1] top-0 bg-gray-200 bg-opacity-75 backdrop-blur backdrop-filter whitespace-nowrap px-2 text-left text-sm font-semibold text-gray-900 h-full"
+              class="sticky z-[1] top-0 bg-gray-200 bg-opacity-75 backdrop-blur backdrop-filter whitespace-nowrap px-2 text-left text-sm font-semibold dark:text-gray-900 text-gray-900 h-full"
               @click="toggleSort('name')">Role Name
               <!-- <shell-table-sort-indicator :is-sorted="sortField === 'name'" :sort-direction="sortOrder"
                 column-title="Name" /> -->
@@ -218,7 +218,7 @@
   <!-- * Modal Creating & Editing New Role -->
   <UIModals v-model="openModalCreatingNewRole" :modal-title="openModalEditingRole ? 'Edit Role' : 'Create New Role'"
     :on-ok="handleOkModalCreateNewRole" :on-close-modal="handleCloseModalCreateNewRole"
-    :disabled-btn-ok="!formUserInputForEditingRole.name || formUserInputForEditingRole.permissions.length === 0">
+    :disabled-btn-ok="!formUserInputForEditingRole.name || formUserInputForEditingRole.permissions.length === 0" class="dark:text-gray-900 text-gray-900">
     <template #modal-content>
       <div class="w-[80vw] select-none">
         <shell-indicator-loading v-if="loading" />
@@ -319,6 +319,7 @@ const roleDetailData = ref<Record<string, { pending: boolean; data: RoleDetails 
 const formUserInputForEditingRole = ref<{
   name: string
   permissions: number[] // Specify the type as string[]
+ 
 }>({
   name: '',
   permissions: [],
@@ -497,7 +498,7 @@ function scrollToModule(module: string) {
   }
 }
 
-const { data, pending, error } = await useApi<ResponseWithPagination<Role[]>>('/admin/roles', {
+const { data, pending, error } = await useApi<ResponseWithPagination<Role[]>>('/admin/roles/', {
   method: 'GET',
   query: appliedFilter,
   params: paginationParams,
