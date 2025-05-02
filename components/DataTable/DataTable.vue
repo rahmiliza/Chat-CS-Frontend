@@ -139,6 +139,7 @@ const props = defineProps<{
 
   pagination?: Pagination;
   expandable?: boolean;
+  onRowExpand?: (entry: T, index: number) => void;
 }>();
 
 const columnCount = computed(
@@ -165,6 +166,7 @@ const toggleRow = (index: number) => {
     expandedRows.value = expandedRows.value.filter((i) => i !== index);
   } else {
     expandedRows.value = [...expandedRows.value, index];
+    props.onRowExpand?.(props.rows[index], index);
   }
 };
 </script>
