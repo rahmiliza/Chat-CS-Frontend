@@ -33,7 +33,7 @@
       <main class="grow overflow-auto p-2 lg:p-4">
         <div class="flex items-center justify-between pb-4">
           <h1 class="text-2xl font-bold">{{ $t(title) }}</h1>
-          <!-- <slot name="page-header" /> -->
+          <slot name="page-header" />
           <!-- This is currently not supported by Nuxt -->
         </div>
         <slot />
