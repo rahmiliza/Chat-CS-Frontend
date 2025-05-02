@@ -248,7 +248,7 @@
   
     try {
       const { data, error } = await useApi<Response>(
-        `/admin/chat-rooms/${activeChatData.value.id}/participants`,
+        `/admin/chat-rooms/${activeChatData.value.id}/chat-participant`,
         {
           method: 'POST',
           body: { user_identifier: participantInput.value },
