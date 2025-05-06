@@ -3,7 +3,7 @@
     class="relative w-full flex items-center border border-white gap-4 p-2 duration-300 rounded-lg hover:cursor-pointer hover:bg-blue-300/50"
     :class="[activeChatData?.id === chatRoomData?.id ? 'bg-blue-200/50 !border-blue-300' : '']" @click="selectChatRoom">
     <div
-      class="flex w-16 h-16 aspect-square items-center justify-center rounded-full bg-blue-300 dark:bg-blue-300 uppercase">
+      class="flex w-12 h-12 aspect-square items-center justify-center rounded-full bg-blue-300 dark:bg-blue-300 uppercase">
       <span>{{ chatRoomData?.participant[getOtherParticipantIndex()]?.display_name[0] }}</span>
     </div>
     <div class="w-full overflow-hidden">

@@ -1,25 +1,23 @@
 <template>
   <div class="w-96 h-full flex flex-col border-r border-slate-300/50">
-    <div class="h-14 flex justify-between items-center border-b-2 border-slate-400 px-2 pb-1">
+    <!-- <div class="h-14 flex justify-between items-center border-b-2 border-slate-400 px-2 pb-1">
       <div class="text-lg font-medium text-slate-500 my-5">
         Direct Message
       </div>
 
       <DPermissionGuard permission="chat_room::assign">
-        <Icon
-          name="uil:comment-plus"
-          size="1.8rem"
+        <Icon name="uil:comment-plus" size="1.8rem"
           class="font-extrabold p-2 rounded-lg text-2xl text-slate-600 hover:cursor-pointer hover:brightness-200 active:brightness-90 hover:bg-red-900"
-          @click="handleCreateChat"
-        />
+          @click="handleCreateChat" />
       </DPermissionGuard>
-    </div>
+    </div> -->
     <div class="h-full my-4 pr-4 flex flex-col gap-2.5 overflow-y-auto">
       <template v-if="listChatRoom?.length > 0">
         <template v-for="chatRoomData in listChatRoom" :key="chatRoomData?.id" class="dark:text-black text-black">
           <ChatRoomInfo :chat-room-data="chatRoomData" :active-chat-data="activeChatData"
             @update-active-chat="$emit('update-active-chat', $event)"
-            @update-active-chat-details="$emit('updateActiveChatDetails', $event)" class="dark:text-black text-black " />
+            @update-active-chat-details="$emit('updateActiveChatDetails', $event)"
+            class="dark:text-black text-black " />
         </template>
       </template>
       <template v-else>
@@ -39,7 +37,7 @@
         <template v-else>
           <div class="mt-2 mb-1  text-medium text-gray-600 text-lg">Add Customer</div>
           <UISelect v-model="selectedParticipantToAddToChat" placeholder="Choose one Customer"
-            :options="listCustomerOpt"  class="text-medium text-lg"/>
+            :options="listCustomerOpt" class="text-medium text-lg" />
         </template>
       </div>
     </template>
@@ -150,6 +148,7 @@ function handleCloseModalCreateChat() {
   openModalCreateChat.value = false
 }
 
+
 const handleCreateChat = async () => {
   openModalCreateChat.value = true
   selectedParticipantToAddToChat.value = ''
@@ -188,8 +187,10 @@ async function handleOkCreateChat() {
     const { data, error } = await useApi<UpsertResponse<ChatRoom>>('/admin/chat-rooms/', {
       method: 'POST',
       body: {
-        room_id: props?.activeChatData?.id ?? '',
-        admin_id: selectedParticipantToAddToChat.value ?? '',
+        participants: [
+          { id: selectedParticipantToAddToChat.value ?? '' },
+          { id: user?.id, display_name: user?.name }
+        ]
       },
     })
 
@@ -222,6 +223,10 @@ async function handleOkCreateChat() {
     openModalAddNewParticipant.value = false
   }
 }
+
+defineExpose({
+  handleCreateChat,
+})
 </script>
 
 <style scoped></style>
