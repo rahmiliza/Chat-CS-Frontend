@@ -4,18 +4,19 @@
       <LoadingIndicator />
     </template>
     <div class="w-full h-full flex bg-white overflow-hidden min-w-[800px]">
-      <ChatHistoryRoomList :list-chat-room="listChatRoom" :active-chat-data="activeChatData" :admin-chat-queue="adminChatQueue"
-        @update-chat-list-loading="toggleChatListLoading" @update-active-chat="handleSetActiveChatData"
-        @update-admin-chat-queue="updateAdminChatQueue" @toggle-global-loading="toggleGlobalLoading"
-        @update-chat-list-data="updateChatListData" @update-active-chat-details="updateActiveChatDetails" />
+      <ChatHistoryRoomList :list-chat-room="listChatRoom" :active-chat-data="activeChatData"
+        :admin-chat-queue="adminChatQueue" @update-chat-list-loading="toggleChatListLoading"
+        @update-active-chat="handleSetActiveChatData" @update-admin-chat-queue="updateAdminChatQueue"
+        @toggle-global-loading="toggleGlobalLoading" @update-chat-list-data="updateChatListData"
+        @update-active-chat-details="updateActiveChatDetails" />
       <template v-if="activeChatData && activeChatDetails">
-      <ChatHistoryChatting :active-chat-data="activeChatData" :active-chat-details="activeChatDetails"
+        <ChatHistoryChatting :active-chat-data="activeChatData" :active-chat-details="activeChatDetails"
           :chatting-container-loading="chattingContainerLoading"
           :active-chat-details-pagination="activeChatDetailsPagination" :list-chat-room="listChatRoom"
-           @update-active-chat="handleSetActiveChatData" @update-active-chat-details="updateActiveChatDetails"
+          @update-active-chat="handleSetActiveChatData" @update-active-chat-details="updateActiveChatDetails"
           @update-chatting-container-loading="toggleChattingContainerLoading"
           @update-chat-list-data="updateChatListData" @toggle-global-loading="toggleGlobalLoading"
-          @trigger-fetch-chat-room-details="triggerFetchChatRoomDetails" /> 
+          @trigger-fetch-chat-room-details="triggerFetchChatRoomDetails" />
       </template>
       <template v-else>
       </template>
@@ -24,17 +25,11 @@
 </template>
 
 <script setup lang="ts">
-import { io } from 'socket.io-client'
 import type { AdminChatQueue, Chat, ChatQueue, ChatRoom, ChatRoomDetails } from '~/models/chat'
 import type { Response, ResponseWithPagination } from '~/models/response'
 
 const { user } = useAuthStore();
 const toast = useToast();
-
-const {
-  public: { socketUrl },
-} = useRuntimeConfig()
-const socket = io(socketUrl)
 
 const globalLoading = ref(false)
 const chattingContainerLoading = ref(false)
