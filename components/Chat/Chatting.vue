@@ -4,6 +4,7 @@
       <LoadingIndicator />
     </template>
 
+    
     <div class=" w-full flex justify-between items-center border-b border-slate-300/50 px-2 py-3 bg-blue-400/20 dark:text-black">
       <div class="w-full text font-semibold truncate ml-2 text-gray-800">
 
@@ -20,20 +21,20 @@
         </template>
       </div>
       <div class="flex gap-2">
-        <!-- <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat_room::add_participant"> -->
+        <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat_room::add_participant"> 
         <UITooltip tooltip-text="Add Participant" direction="bottom-right">
           <Icon name="hugeicons:user-add-02"
             class="ml-auto font-bold p-2 rounded-lg text-2xl text-blue-500 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-blue-800"
             @click="handleAddingParticipant" />
         </UITooltip>
-        <!-- </DPermissionGuard> -->
-        <!-- <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat_room::finish"> -->
+       </DPermissionGuard> 
+       <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat_room::finish">
         <UITooltip tooltip-text="Finish Chat" direction="bottom-right">
           <Icon name="hugeicons:flag-01"
             class="font-bold p-2 rounded-lg text-2xl text-blue-500 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-blue-800"
             @click="showFinishConfirm = true" />
         </UITooltip>
-        <!-- </DPermissionGuard> -->
+         </DPermissionGuard>
         <UITooltip tooltip-text="Minimize Chat" direction="bottom-right">
           <Icon name="hugeicons:arrow-shrink-02"
             class="font-bold p-2 rounded-lg text-2xl text-blue-500 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-blue-800"
@@ -53,6 +54,7 @@
         </template>
       </div>
        <!-- <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat::store"> --> -->
+       <!-- <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat::store"> --> 
       <div class="flex gap-2 items-center px-4">
         <Menu>
           <div>
