@@ -11,6 +11,7 @@ export interface User {
   id: string;
   name: string;
   username: string;
+  roleId: string;
   permissions?: string[] | null;
   userPermissions?: string[] | null;
 }
@@ -73,6 +74,7 @@ export const useAuthStore = defineStore(
             id: data.id,
             name: data.name,
             username: data.username,
+            roleId: data.role_id,
             userPermissions: data?.role?.permissions?.map((item) => item?.identifier) ?? [],
           };
         }else{
@@ -80,6 +82,7 @@ export const useAuthStore = defineStore(
             id: data.data.id,
             name: data.data.display_name,
             username: data.data.display_name,
+            roleId: data.data.role_id,
             userPermissions: data.data?.role?.permissions?.map((item) => item?.identifier) ?? [],
           };
         }
