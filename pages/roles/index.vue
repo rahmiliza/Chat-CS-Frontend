@@ -1,14 +1,20 @@
 <template>
-  <div class="w-full h-full">
+  <div class="w-full h-full ">
     <div v-if="loading">
       <LoadingIndicator />
     </div>
 
+    <div class="mx-auto">
+          <h1 class="dark:text-black font-bold text-2xl py-3 ">Manage Roles</h1>
+        </div>
+
     <div class="flex items-center justify-end mb-4 -mt-12">
+      
       <div class="flex items-center gap-2">
+     
         <UISearchBar @submit="(q) => handleSearchBar(q)" />
         <button
-          class="flex gap-1 dark:text-black bg-blue-500 px-4 py-2 text-white leading-2 rounded-md hover:bg-blue-600 active:bg-blue-700"
+          class="flex gap-1 dark:text-black bg-blue-500 px-4 py-2 text-white leading-2 rounded-md hover:bg-blue-300 active:bg-blue-400"
           @click="
             () => {
               formUserInputForEditingRole.name = ''
@@ -16,18 +22,19 @@
               openModalCreatingNewRole = true
             }
           ">
-          <Icon name="uil:plus" class="text-2xl" />
+          <Icon name="uil:plus" class="text-2xl bg-white" />
           Role
         </button>
       </div>
     </div>
 
-    <div class="min-w-full align-middle relative min-h-full inline-flex flex-col justify-between">
+    <div class="min-w-full align-middle relative min-h-full inline-flex flex-col justify-between ">
       <DataTable :columns="[
-        { key: 'name', label: 'Role Name', cellClass: 'border-b border-gray-200 text-left dark:border-gray-700 dark:text-black py-2' },
+        { key: 'name', label: 'Role Name', cellClass: 'border-b border-gray-500 text-left dark:border-gray-700 dark:text-black py-2'  },
         { key: 'created_at', label: 'Created At' },
         { key: 'action', label: 'Action' },
-      ]" keyProp="id" :rows="listRoles" :loading="loading" :pagination="paginationParams"
+      ]"
+       keyProp="id" :rows="listRoles" :loading="loading" :pagination="paginationParams"
         :onRowExpand="handleGetRoleDetailData" expandable>
         <template #cell-created_at="{ entry }">
           <div class="whitespace-nowrap p-2 text-sm font-medium text-gray-900">
@@ -38,7 +45,7 @@
           <div class="flex items-center gap-2">
             <UITooltip tooltip-text="Edit Roles" direction="bottom-right">
               <Icon name="hugeicons:pen-01"
-                class="ml-auto font-bold p-2 rounded-lg text-2xl text-blue-500 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-blue-800"
+                class="ml-auto font-bold p-2 rounded-lg text-2xl text-blue-500 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-blue-300"
                 @click="
                   () => {
                     getRolePermissions(entry?.id)
@@ -50,7 +57,7 @@
             </UITooltip>
             <UITooltip tooltip-text="Delete Roles" direction="bottom-right">
               <Icon name="hugeicons:delete-02"
-                class="ml-auto font-bold p-2 rounded-lg text-2xl text-blue-500 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-blue-800"
+                class="ml-auto font-bold p-2 rounded-lg text-2xl text-blue-500 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-blue-300"
                 @click="
                   () => {
                     selectedRole = { ...entry }
@@ -64,13 +71,13 @@
           <div class="p-4 max-h-[400px] overflow-auto">
             <UISkeleton v-if="roleDetailData[entry?.id].pending === true" />
             <div v-else class="w-[100%]">
-              <div class="p-4 bg-gray-100 rounded-md">
-                <h3 class="text-lg font-semibold mb-2">Role Permissions</h3>
+              <div class="p-4 dark:bg-slate-100 rounded-md">
+                <h3 class="text-lg  dark:text-black font-bold mb-2">Role Permissions</h3>
                 <ul class="list-disc list-outside pl-6">
                   <li v-for="permission in roleDetailData?.[entry?.id]?.data?.permissions ?? []" :key="permission.id"
-                    class="mb-1 p-2 rounded-lg border-b border-gray-300 hover:bg-gray-200">
-                    <div class="font-semibold">{{ permission.name }}.</div>
-                    <div class="text-sm text-gray-600">{{ permission.description }}</div>
+                    class="mb-1 p-2 rounded-lg border-b dark:text-slate-800 dark:border-gray-400 border-gray-300 hover:bg-blue-300">
+                    <div class="font-semibold dark:text-slate-800 ">{{ permission.name }}.</div>
+                    <div class="text-sm dark:text-slate-800 text-gray-600">{{ permission.description }}</div>
                   </li>
                 </ul>
               </div>
@@ -422,7 +429,7 @@ onBeforeMount(() => {
 })
 
 definePageMeta({
-  title: 'Manage Roles',
+  // title: 'Manage Roles',
 })
 </script>
 

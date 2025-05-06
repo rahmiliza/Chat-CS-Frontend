@@ -4,7 +4,7 @@
       <LoadingIndicator />
     </template>
 
-    <div class=" w-full flex justify-between items-center border-b border-slate-300/50 px-2 py-3 bg-blue-400/20">
+    <div class=" w-full flex justify-between items-center border-b border-slate-300/50 px-2 py-3 bg-blue-400/20 dark:text-black">
       <div class="w-full text font-semibold truncate ml-2 text-gray-800">
 
         <template v-if="activeChatData?.participant && activeChatData.participant.length > 2">
@@ -52,7 +52,7 @@
           <ChatBubble :chat="chat" :active-chat-details="activeChatDetails" />
         </template>
       </div>
-      <!-- <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat::store"> -->
+       <!-- <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat::store"> --> -->
       <div class="flex gap-2 items-center px-4">
         <Menu>
           <div>
@@ -282,7 +282,7 @@
     openModalAddNewParticipant.value = true
     loadingGetListAdmin.value = true
     try {
-      const { data, error } = await useApi<UpsertResponse<User[]>>('/admins?per_page=1000', {
+      const { data, error } = await useApi<UpsertResponse<User[]>>('/admins/chat-rooms/admin?per_page=1000', {
         method: 'GET',
       })
 

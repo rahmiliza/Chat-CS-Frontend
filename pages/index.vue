@@ -4,7 +4,7 @@
      <!-- Main Content -->
       <main class="flex-1 p-8">
         <div class="mb-6 flex justify-between items-center">
-          <h1 class="text-3xl font-bold text-gray-600">Dashboard</h1>
+          <h1 class="text-3xl font-bold text-gray-600">Xinchuan CS</h1>
           <button @click="openModal" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
             Create New Ticket
           </button>

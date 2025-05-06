@@ -2,10 +2,14 @@
   <div class="relative h-full w-[calc(100%-336px)]">
     <template v-if="chattingContainerLoading">
       <!-- <shell-indicator-loading /> -->
+       
     </template>
-
-    <div class="h-14 bg-blue-100 w-full flex justify-between items-center border-b border-black px-2 ">
-      <div class="w-full text-lg font-bold truncate ml-2">
+    <div>
+      <h1 class="text-xl overflow font-semibold text-slate-700  my-3"> Now, You have chat room with Admin Xinchuan </h1>
+    </div>
+    <div class="h-14 bg-blue-300 w-full flex justify-between items-center border-b border-black px-2 ">
+    
+      <div class="w-full text-lg font-bold truncate ml-2 dark:text-black">
         <template v-if="activeChat?.participant && activeChat.participant.length > 2">
           {{
             activeChat?.participant
@@ -15,7 +19,11 @@
           }}
         </template>
         <template v-else class= "text-black">
-          {{ activeChat?.participant[getOtherParticipantIndex()]?.display_name }}
+          {{ activeChat?.participant[getOtherParticipantIndex()]?.display_name  + '"Admin"'
+          .map((p) => p.display_name ) 
+          .join(', ')
+          
+          }}
         </template>
       </div>
 
@@ -98,6 +106,13 @@
             uploadedFiles = []
           }
         " /> -->
+
+        <Icon name="hugeicons:cancel-01" class="text-2xl hover:cursor-pointer hover:text-blue-500 active:text-blue-700"
+          @click="
+            () => {
+              uploadedFiles = []
+            }
+          " />
       </div>
       <div
         class="mt-4 bg-slate-200 w-[500px] min-h-[400px] bg-contain bg-no-repeat flex overflow-hidden bg-center justify-center items-center"
