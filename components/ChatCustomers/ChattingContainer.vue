@@ -3,6 +3,7 @@
     <template v-if="chattingContainerLoading">
       <!-- <shell-indicator-loading /> -->
        
+       
     </template>
     <div>
       <h1 class="text-xl overflow font-semibold text-slate-700  my-3"> Now, You have chat room with Admin Xinchuan </h1>
@@ -20,8 +21,7 @@
         </template>
         <template v-else class= "text-black">
           {{ activeChat?.participant[getOtherParticipantIndex()]?.display_name  + '"Admin"'
-          .map((p) => p.display_name ) 
-          .join(', ')
+          
           
           }}
         </template>
@@ -101,11 +101,7 @@
         <!-- <shell-indicator-loading /> -->
       </div>
       <div class="mt-4 pr-4 flex items-center justify-end">
-        <!-- <fa-icon icon="xmark" class="text-2xl hover:cursor-pointer hover:text-red-500 active:text-red-700" @click="
-          () => {
-            uploadedFiles = []
-          }
-        " /> -->
+     s
 
         <Icon name="hugeicons:cancel-01" class="text-2xl hover:cursor-pointer hover:text-blue-500 active:text-blue-700"
           @click="
