@@ -4,10 +4,11 @@
       <LoadingIndicator />
     </template>
     <div class="w-full h-full flex bg-white overflow-hidden min-w-[800px]">
-      <ChatRoomList :list-chat-room="listChatRoom" :active-chat-data="activeChatData" :admin-chat-queue="adminChatQueue"
-        @update-chat-list-loading="toggleChatListLoading" @update-active-chat="handleSetActiveChatData"
-        @update-admin-chat-queue="updateAdminChatQueue" @toggle-global-loading="toggleGlobalLoading"
-        @update-chat-list-data="updateChatListData" @update-active-chat-details="updateActiveChatDetails" />
+      <ChatRoomList ref="roomListRef" :list-chat-room="listChatRoom" :active-chat-data="activeChatData"
+        :admin-chat-queue="adminChatQueue" @update-chat-list-loading="toggleChatListLoading"
+        @update-active-chat="handleSetActiveChatData" @update-admin-chat-queue="updateAdminChatQueue"
+        @toggle-global-loading="toggleGlobalLoading" @update-chat-list-data="updateChatListData"
+        @update-active-chat-details="updateActiveChatDetails" />
       <template v-if="activeChatData && activeChatDetails">
         <ChatChatting :active-chat-data="activeChatData" :active-chat-details="activeChatDetails"
           :chatting-container-loading="chattingContainerLoading"
@@ -28,6 +29,7 @@
 import { io } from 'socket.io-client'
 import type { AdminChatQueue, Chat, ChatQueue, ChatRoom, ChatRoomDetails } from '~/models/chat'
 import type { Response, ResponseWithPagination } from '~/models/response'
+import RoomList from './RoomList.vue';
 
 const { user } = useAuthStore();
 const toast = useToast();
@@ -47,6 +49,8 @@ const adminChatQueue = ref<AdminChatQueue>()
 const activeChatData = ref<ChatRoom | null>()
 const activeChatDetails = ref<ChatRoomDetails>()
 const activeChatDetailsPagination = ref()
+
+const roomListRef = ref()
 
 const { data: chatRooms, pending: pendingChatRooms } = await useAsyncData('chatRooms', () =>
   useApi<Response<ChatRoom[]>>('/admin/chat-rooms', {
