@@ -80,145 +80,13 @@
       </DataTable>
     </div>
 
-    <div class="min-w-full align-middle relative min-h-full inline-flex flex-col justify-between">
-      <table class="min-w-full divide-y divide-gray-300">
-        <thead>
-          <tr>
-            <th scope="col"
-              class="sticky z-[1] top-0 bg-gray-200 bg-opacity-75 backdrop-blur backdrop-filter whitespace-nowrap p-2 text-left text-sm font-semibold text-gray-900">
-              fa
-            </th>
-            <th scope="col"
-              class="sticky z-[1] top-0 bg-gray-200 bg-opacity-75 backdrop-blur backdrop-filter whitespace-nowrap px-2 text-left text-sm font-semibold dark:text-gray-900 text-gray-900 h-full"
-              @click="toggleSort('name')">Role Name
-              <!-- <shell-table-sort-indicator :is-sorted="sortField === 'name'" :sort-direction="sortOrder"
-                column-title="Name" /> -->
-            </th>
-            <th scope="col"
-              class="sticky z-[1] top-0 bg-gray-200 bg-opacity-75 backdrop-blur backdrop-filter whitespace-nowrap px-2 text-left text-sm font-semibold text-gray-900 h-full"
-              @click="toggleSort('created_at')">Created At
-              <!-- <shell-table-sort-indicator :is-sorted="sortField === 'created_at'" :sort-direction="sortOrder"
-                column-title="Created At" /> -->
-            </th>
-            <th scope="col"
-              class="sticky z-[1] top-0 bg-gray-200 bg-opacity-75 backdrop-blur backdrop-filter whitespace-nowrap p-2 text-left text-sm font-semibold text-gray-900">
-              Action
-            </th>
-          </tr>
-        </thead>
-        <tbody v-if="(listRoles ?? []).length > 0" class="divide-y divide-gray-200 bg-white -z-10">
-          <template v-for="entry in listRoles" :key="`role-${entry.id}`">
-            <tr class="even:bg-gray-50">
-              <td class="whitespace-nowrap p-2 text-sm text-gray-500 tabular-nums w-4">
-                <!-- <shell-table-expand-button :active="rowIsExpanded(entry?.id)"
-                  @expand-btn-click="() => toggleExpanded(entry?.id)" @click="() => handleGetRoleDetailData(entry)" /> -->
-              </td>
-              <td class="whitespace-nowrap p-2 text-sm font-medium text-gray-900">
-                {{ entry?.name }}
-              </td>
-              <td class="whitespace-nowrap p-2 text-sm font-medium text-gray-900 tabular-nums tracking-wider">
-                {{ formatDatetime(entry.created_at) }}
-              </td>
-              <td class="p-2 pr-4 text-sm font-medium text-gray-900 w-0">
-                <Menu as="div" class="relative inline-block">
-                  <div>
-                    <MenuButton
-                      class="inline-flex w-full border border-slate-200 shadow-sm text-slate-500 justify-center items-center rounded-lg px-2 py-0.5 text-sm font-medium hover:bg-slate-200 active:bg-slate-300">
-                      Action
-                      <Icon name="chevron-down" class="ml-2 -mr-1 h-5 w-4" />
-                    </MenuButton>
-                  </div>
-
-                  <transition enter-active-class="transition duration-100 ease-out"
-                    enter-from-class="transform scale-95 opacity-0" enter-to-class="transform scale-100 opacity-100"
-                    leave-active-class="transition duration-75 ease-in"
-                    leave-from-class="transform scale-100 opacity-100" leave-to-class="transform scale-95 opacity-0">
-                    <MenuItems
-                      class="absolute z-50 right-0 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                      <div class="px-1 py-1">
-                        <MenuItem v-slot="{ active }">
-                        <button :class="[
-                          active ? 'bg-red-500 text-white' : 'text-black',
-                          'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                        ]" @click="
-                          () => {
-                            getRolePermissions(entry?.id)
-                            selectedRole = entry
-                            openModalCreatingNewRole = true
-                            openModalEditingRole = true
-                          }
-                        ">
-                          <Icon name="uil:pen-to-square" class="mr-2"
-                            :class="active ? 'bg-red-500 text-white' : 'text-red-600'" />
-                          Edit Role
-                        </button>
-                        </MenuItem>
-                        <MenuItem v-slot="{ active }">
-                        <button :class="[
-                          active ? 'bg-red-500 text-white' : 'text-black',
-                          'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                        ]" @click="
-                          () => {
-                            selectedRole = { ...entry }
-                            openModalDeleteRole = true
-                          }
-                        ">
-                          <Icon name="uil:trash" class="mr-2 text-red-600"
-                            :class="active ? 'bg-red-500 text-white' : ''" />
-                          Delete Role
-                        </button>
-                        </MenuItem>
-                      </div>
-                    </MenuItems>
-                  </transition>
-                </Menu>
-              </td>
-            </tr>
-            <tr v-if="rowIsExpanded(entry?.id)">
-              <td :colspan="4">
-                <div class="p-4 max-h-[400px] overflow-auto">
-                  <UISkeleton v-if="roleDetailData[entry?.id].pending === true" />
-                  <div v-else class="w-[100%]">
-                    <div class="p-4 bg-gray-100 rounded-md">
-                      <h3 class="text-lg font-semibold mb-2">Role Permissions</h3>
-                      <ul class="list-disc list-outside pl-6">
-                        <li v-for="permission in roleDetailData?.[entry?.id]?.data?.permissions ?? []"
-                          :key="permission.id" class="mb-1 p-2 rounded-lg border-b border-gray-300 hover:bg-gray-200">
-                          <div class="font-semibold">{{ permission.name }}.</div>
-                          <div class="text-sm text-gray-600">{{ permission.description }}</div>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-          </template>
-        </tbody>
-        <tbody v-else-if="errGetListRoles != null">
-          <tr>
-            <td>
-              <!-- <shell-indicator-error :error="errGetListRoles" /> -->
-            </td>
-          </tr>
-        </tbody>
-        <tbody v-else>
-          <tr>
-            <td>
-              <!-- <shell-indicator-no-data /> -->
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <!-- <shell-pagination-next-prev-with-cursor v-model="paginationParams" :meta-data="paginationData"
-        :curr-pagination-page="currPaginationPage" @set-curr-page="handleChangeCurrPaginationPage" /> -->
-    </div>
   </div>
 
   <!-- * Modal Creating & Editing New Role -->
   <UIModals v-model="openModalCreatingNewRole" :modal-title="openModalEditingRole ? 'Edit Role' : 'Create New Role'"
     :on-ok="handleOkModalCreateNewRole" :on-close-modal="handleCloseModalCreateNewRole"
-    :disabled-btn-ok="!formUserInputForEditingRole.name || formUserInputForEditingRole.permissions.length === 0" class="dark:text-gray-900 text-gray-900">
+    :disabled-btn-ok="!formUserInputForEditingRole.name || formUserInputForEditingRole.permissions.length === 0"
+    class="dark:text-gray-900 text-gray-900">
     <template #modal-content>
       <div class="w-[80vw] select-none">
         <shell-indicator-loading v-if="loading" />
@@ -264,10 +132,9 @@
 <script setup lang="ts">
 import { RolePermissionLists } from '#components'
 import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
-import { toast } from 'vue3-toastify'
 import type { Pagination } from '~/components/DataTable/datatableMeta'
 import type { PaginationResponse, Response, ResponseWithPagination } from '~/models/response'
-import type { Role, Permission, RoleDetails } from '~/models/role'
+import type { Role, PermissionGroup, Permission, RoleDetails } from '~/models/role'
 
 // import {
 //   // ResponseWithPagination,
@@ -281,11 +148,13 @@ import type { Role, Permission, RoleDetails } from '~/models/role'
 // } f
 
 const loading = ref(false)
+const toast = useToast();
+const { user } = useAuthStore()
 const errGetListRoles = ref<Error | null>(null)
 const errGetListPermissions = ref<Error | null>(null)
 
 const listRoles = ref<Role[]>([])
-const listPermissions = ref<Permission>({})
+const listPermissions = ref<Record<string, Permission[]>>({})
 
 const sortField = ref('created_at') // Current field to sort by
 const sortOrder = ref<'asc' | 'desc' | ''>('desc') // Current sort order
@@ -319,7 +188,7 @@ const roleDetailData = ref<Record<string, { pending: boolean; data: RoleDetails 
 const formUserInputForEditingRole = ref<{
   name: string
   permissions: number[] // Specify the type as string[]
- 
+
 }>({
   name: '',
   permissions: [],
@@ -442,17 +311,23 @@ async function handleOkModalCreateNewRole() {
       } else {
         listRoles.value.push({ ...resp })
       }
-
-      toast.success(openModalEditingRole.value ? 'Success updating Role' : 'Success creating new Role')
+      toast.add({
+        message: openModalEditingRole.value ? 'Success updating Role' : 'Success creating new Role',
+        type: 'success'
+      })
 
       handleCloseModalCreateNewRole()
     } else {
-      const errMsg = error.value?.data?.message ?? 'An Error was Accrued, Please try again'
-      toast.error(errMsg)
+      toast.add({
+        message: error.value?.data?.message ?? 'An Error was Accrued, Please try again',
+        type: 'error'
+      })
     }
   } catch (e: any) {
-    const errMsg = e?.value?.data?.message || 'An Error was Accrued, Please try again'
-    toast.error(`${errMsg}`)
+    toast.add({
+      message: e?.value?.data?.message || 'An Error was Accrued, Please try again',
+      type: 'error'
+    })
   } finally {
     loading.value = false
   }
@@ -471,15 +346,23 @@ async function handleOkModalDeleteRole() {
 
       if (indexDeletedRole !== -1) {
         listRoles.value.splice(indexDeletedRole, 1)
-        toast.success('Selected Role has been successfully deleted')
+
+        toast.add({
+          message: 'Selected Role has been successfully deleted',
+          type: 'success'
+        })
       }
     } else {
-      const errMsg = error.value?.data?.message ?? 'An Error was Accrued, Please try again'
-      toast.error(errMsg)
+      toast.add({
+        message: error.value?.data?.message ?? 'An Error was Accrued, Please try again',
+        type: 'error'
+      })
     }
   } catch (e: any) {
-    const errMsg = e?.value?.data?.message || 'An Error was Accrued, Please try again'
-    toast.error(`${errMsg}`)
+    toast.add({
+      message: e?.value?.data?.message || 'An Error was Accrued, Please try again',
+      type: 'error'
+    })
   } finally {
     loading.value = false
   }
@@ -504,8 +387,8 @@ const { data, pending, error } = await useApi<ResponseWithPagination<Role[]>>('/
   params: paginationParams,
 })
 
-const { data: dataPermissions, pending: pendingPermissions } = await useApi<ResponseWithPagination<Permission>>(
-  '/admin/permissions',
+const { data: dataPermissions, pending: pendingPermissions } = await useApi<ResponseWithPagination<Permission[]>>(
+  `/admin/permissions/${user?.roleId}`,
   {
     method: 'GET',
   }
@@ -517,7 +400,14 @@ watch(
     listRoles.value = data.value?.data ?? []
     errGetListRoles.value = error.value
     errGetListPermissions.value = error.value
-    listPermissions.value = dataPermissions.value?.data ?? {}
+    listPermissions.value = dataPermissions.value?.data?.reduce<Record<string, Permission[]>>((acc, item) => {
+      if (!acc[item.module]) {
+        acc[item.module] = [];
+      }
+      acc[item.module].push(item);
+      return acc;
+    }, {}) ?? {};
+
     paginationData.value = data.value?.pagination ?? {
       next_page_cursor: '',
       per_page: 25,
