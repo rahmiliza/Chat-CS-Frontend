@@ -44,8 +44,8 @@ const tabs = [
 ]
 
 const handleCreateChat = async () => {
-  // await nextTick()
-  // console.log(activeChatRef.value?.$refs)
-  activeChatRef.value?.$refs?.roomListRef?.handleCreateChat()
+  // Ensure roomListRef has the correct type
+  const roomListRef = activeChatRef.value?.$refs?.roomListRef as { handleCreateChat: () => void } | undefined;
+  roomListRef?.handleCreateChat();
 }
 </script>
