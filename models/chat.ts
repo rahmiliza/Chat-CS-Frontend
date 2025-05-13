@@ -24,8 +24,6 @@ export interface Chat {
     id: string
     created_at: number
     updated_at: number
-    status: string
-    order_id: string | null
     closed_at: number | null
     last_message: Chat
     participant: Participant[]
