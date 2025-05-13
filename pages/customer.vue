@@ -96,11 +96,11 @@ watch(activeChat, (chatRoom) => {
 const startChat = async () => {
   const { data } = await useApi<Response>(config.public.apiBaseUrl + '/chat-rooms', {
     method: "POST",
-    body: {
-      participants: [
-        { id: user?.id, display_name: user?.name }
-      ]
-    }
+    // body: {
+    //   participants: [
+    //     { id: user?.id, display_name: user?.name }
+    //   ]
+    // }
   })
 
   if (data.value?.ok) {
