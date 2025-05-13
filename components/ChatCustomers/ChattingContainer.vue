@@ -362,7 +362,7 @@ async function handleRequestSendMessage(message_type: 'TEXT' | 'IMAGE' = 'TEXT')
   try {
     const otherParticipantId = props?.activeChat?.participant[getOtherParticipantIndex()]?.user_id
 
-    const { data, error } = await useApi<ResponseWithMessage<Chat>>(`/chat-rooms/${props?.activeChat?.id}/chat`, {
+    const { data, error } = await useApi<Response<Chat>>(`/chat-rooms/${props?.activeChat?.id}/chat`, {
       method: 'POST',
       body: {
         message: chatMessage ?? '',
@@ -371,7 +371,7 @@ async function handleRequestSendMessage(message_type: 'TEXT' | 'IMAGE' = 'TEXT')
       },
     })
 
-    if (data.value?.status) {
+    if (data.value?.ok) {
       message.value = null
 
       const roomValue = {
