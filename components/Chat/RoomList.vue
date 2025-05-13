@@ -64,8 +64,7 @@ const toast = useToast();
 const loadingGetListCustomer = ref(false)
 const openModalCreateChat = ref(false)
 const listCustomerOpt = ref<Option[]>([])
-const selectedParticipantToAddToChat = ref()
-
+const selectedParticipantToAddToChat = ref<string | number>('')
 interface Props {
   listChatRoom: ChatRoom[]
   activeChatData?: ChatRoom | null
@@ -152,11 +151,10 @@ function handleCloseModalCreateChat() {
 const handleCreateChat = async () => {
   openModalCreateChat.value = true
   selectedParticipantToAddToChat.value = ''
-  openModalCreateChat.value = true
   loadingGetListCustomer.value = true
 
   try {
-    const { data, error } = await useApi<Response<User[]>>('/admin/chat-rooms/customer?per_page=1000', {
+    const { data, error } = await useApi<Response<User[]>>('/new/admin/chat-rooms/customer?per_page=100', {
       method: 'GET',
     })
 
@@ -184,12 +182,12 @@ async function handleOkCreateChat() {
   emitLoading(true)
 
   try {
-    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('/admin/chat-rooms/', {
+    const { data, error } = await useApi<Response<ChatRoom>>('/new/admin/chat-rooms/', {
       method: 'POST',
       body: {
         participants: [
           { id: selectedParticipantToAddToChat.value ?? '' },
-          { id: user?.id, display_name: user?.name }
+          // { id: user?.id, display_name: user?.name }
         ]
       },
     })
@@ -197,17 +195,16 @@ async function handleOkCreateChat() {
     if (data.value?.ok) {
       toast.add({ message: 'Participant added successfully', type: "success" })
 
-      const chatIndex = props?.listChatRoom?.findIndex((item) => item?.id === props?.activeChatDetails?.chat_room?.id)
-
-      if (chatIndex !== undefined && chatIndex > -1 && props.listChatRoom) {
+      const chatIndex = props?.listChatRoom?.findIndex((item) => item?.id === data.value?.data?.id)
+      if (chatIndex !== undefined && chatIndex == -1) {
         const tempListChat = [...props.listChatRoom]
         tempListChat[chatIndex] = { ...tempListChat[chatIndex], ...data.value?.data }
 
         emits('updateChatListData', tempListChat)
-        emits('triggerFetchChatRoomDetails')
+        // emits('triggerFetchChatRoomDetails')
       }
     }
-    else if (data.value?.status === false) {
+    else if (data.value?.ok === false) {
       toast.add({ message: 'Participant already exists in this chat', type: "error" })
     }
     else {
@@ -220,7 +217,7 @@ async function handleOkCreateChat() {
     toast.add({ message: errMsg, type: "error" })
   } finally {
     emitLoading(false)
-    openModalAddNewParticipant.value = false
+    openModalCreateChat.value = false
   }
 }
 
