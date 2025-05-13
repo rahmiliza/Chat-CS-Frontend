@@ -1,6 +1,6 @@
 <template>
   <div class="w-full h-[calc(100%-34px)]">
-    <template v-if="pendingChatRooms || globalLoading">
+    <template v-if="chatRoomsStatus === 'pending' || globalLoading">
       <LoadingIndicator />
     </template>
     <div class="w-full h-full flex bg-white overflow-hidden min-w-[800px]">
@@ -52,8 +52,8 @@ const activeChatDetailsPagination = ref()
 
 const roomListRef = ref()
 
-const { data: chatRooms, pending: pendingChatRooms } = await useAsyncData('chatRooms', () =>
-  useApi<Response<ChatRoom[]>>('/admin/chat-rooms', {
+const { data: chatRooms, status: chatRoomsStatus } = await useAsyncData('chatRooms', () =>
+  useApi<Response<ChatRoom[]>>('/new/admin/chat-rooms/?is_active=true&unassigned=false', {
     method: 'GET',
   }).then((res) => res.data.value?.data)
 )
@@ -65,8 +65,8 @@ watchEffect(() => {
 })
 
 function sortChatRoom(a: ChatRoom, b: ChatRoom) {
-  if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') return -1
-  if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') return 1
+  // if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') return -1
+  // if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') return 1
   return b.last_message.created_at - a.last_message.created_at
 }
 
@@ -116,7 +116,7 @@ async function fetchChatRoomDetails(nextCursor: string = '') {
 
   try {
     const { data, error } = await useApi<ResponseWithPagination>(
-      `/admin/chat-rooms/${activeChatData.value?.id}/chats?offset=${nextCursor}&sortBy=created_at&order=DESC`,
+      `/new/admin/chat-rooms/${activeChatData.value?.id}/chats?offset=${nextCursor}&sortBy=created_at&order=DESC`,
       { method: 'GET' }
     )
     if (data.value?.data) {
