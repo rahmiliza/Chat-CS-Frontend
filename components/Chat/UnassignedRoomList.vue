@@ -58,7 +58,7 @@ async function handleAddAdminChatIndex() {
   emits('toggleGlobalLoading', true)
 
   try {
-    const { data, error } = await useApi<UpsertResponse<AdminChatQueueExtended>>('/new/admin/chat-rooms/', {
+    const { data, error } = await useApi<UpsertResponse<AdminChatQueueExtended>>('new/admin/chat-rooms/', {
       method: 'POST',
     })
 

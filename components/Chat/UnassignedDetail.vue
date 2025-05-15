@@ -245,7 +245,7 @@ async function handleOkAddNewParticipant() {
   emitLoading(true)
 
   try {
-    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('/admin/chat-rooms/' + props?.activeChatData?.id + '/chat-participant', {
+    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('new/admin/chat-rooms/' + props?.activeChatData?.id + '/chat-participant', {
       method: 'POST',
       body: {
         room_id: props?.activeChatData?.id ?? '',
@@ -291,7 +291,7 @@ async function handleRequestSendMessage(message_type: 'TEXT' | 'IMAGE' = 'TEXT')
   try {
     const otherParticipantId = props?.activeChatData?.participant[getOtherParticipantIndex()]?.user_id
 
-    const { data, error } = await useApi<UpsertResponse<Chat>>(`admin/chat-rooms/${props?.activeChatData?.id}/chat`, {
+    const { data, error } = await useApi<UpsertResponse<Chat>>(`new/admin/chat-rooms/${props?.activeChatData?.id}/chat`, {
       method: 'POST',
       body: {
         message: chatMessage ?? '',
