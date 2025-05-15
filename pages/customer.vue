@@ -1,6 +1,7 @@
 <template>
-  <div class="w-full px-2">
+  <div class="w-full min-h-screen px-4 py-6 bg-gray-50 dark:bg-slate-100 shadow-xl -p-2">
     <template v-if="activeChat">
+      <!-- Active Chat Container -->
       <ChatCustomersChattingContainer
         ref="chatting"
         :active-chat="activeChat"
@@ -17,25 +18,30 @@
       />
     </template>
 
+    <!-- Empty State - No Active Chat -->
     <div
       v-else
-      class="max-w-[400px] mx-auto flex flex-col items-center justify-center gap-4 dark:text-black text-black"
+      class="max-w-md mx-auto flex flex-col items-center justify-center border-slate-900 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mt-20 space-y-4"
     >
+      <h2 class="text-lg font-semibold text-gray-500 dark:text-white text-center">
+      Create Chat Room Now
+      </h2>
       <textarea
         v-model="message"
-        class="w-full rounded-lg border px-3 py-2 outline-none transition-colors text-black focus:border-primary focus:ring-primary focus:ring-1"
-        placeholder="Masukan Pertanyaan"
+        class="w-full h-24 rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 resize-none text-slate-900 dark:text-slate-900 bg-white dark:bg-slate-100 focus:border-slate-400 focus:ring-slate-400  focus:ring-1 outline-none transition"
+        placeholder="Enter your question here..."
       />
       <Button
-        class="bg-primary text-gray-50 hover:brightness-125 my-1 mr-3 h-[36px]"
+        class="w-full bg-primary text-white hover:brightness-110 py-2 rounded-lg font-medium shadow disabled:opacity-50 disabled:cursor-not-allowed transition"
         @click="startChat"
-        :disabled="!message"
-      >
-        Mulai Chat
+        :disabled="!message"      >
+        Start Chat
       </Button>
     </div>
   </div>
 </template>
+
+
 
 <script lang="ts" setup>
 import { io } from 'socket.io-client'
