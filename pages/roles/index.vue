@@ -12,23 +12,25 @@
       
       <div class="flex items-center gap-2">
      
-        <UISearchBar @submit="(q) => handleSearchBar(q)" />
-        <button
-          class="flex gap-1 dark:text-black bg-blue-500 px-4 py-2 text-white leading-2 rounded-md hover:bg-blue-300 active:bg-blue-400"
-          @click="
-            () => {
-              formUserInputForEditingRole.name = ''
-              formUserInputForEditingRole.permissions = []
-              openModalCreatingNewRole = true
-            }
-          ">
-          <Icon name="uil:plus" class="text-2xl bg-white" />
-          Role
-        </button>
+        <!-- <UISearchBar @submit="(q) => handleSearchBar(q)" /> -->
+          <button
+            class="flex items-center gap-2 bg-blue-500 text-white px-6 py-2 rounded-xl shadow-md hover:bg-blue-600 active:bg-blue-700 transition duration-150"
+            @click="
+              () => {
+                formUserInputForEditingRole.name = ''
+                formUserInputForEditingRole.permissions = []
+                openModalCreatingNewRole = true
+              }
+            "
+          >
+            <Icon name="heroicons:plus-circle" class="text-2xl bg-white rounded-full shadow p-1 text-blue-500" />
+            <span class="font-medium">Add Role</span>
+          </button>
+
       </div>
     </div>
 
-    <div class="min-w-full align-middle relative min-h-full inline-flex flex-col justify-between ">
+    <div class="min-w-full align-middle relative min-h-full inline-flex flex-col justify-between shadow-lg">
       <DataTable :columns="[
         { key: 'name', label: 'Role Name', cellClass: 'border-b border-gray-500 text-left dark:border-gray-700 dark:text-black py-2'  },
         { key: 'created_at', label: 'Created At' },
@@ -68,16 +70,16 @@
           </div>
         </template>
         <template #detail="{ entry }">
-          <div class="p-4 max-h-[400px] overflow-auto">
+          <div class="px-4 py-1 max-h-[400px] overflow-auto shadow-lg">
             <UISkeleton v-if="roleDetailData[entry?.id].pending === true" />
             <div v-else class="w-[100%]">
-              <div class="p-4 dark:bg-slate-100 rounded-md">
-                <h3 class="text-lg  dark:text-black font-bold mb-2">Role Permissions</h3>
+              <div class="dark:bg-blue-50 rounded-lg shadow-lg">
+                <h3 class="text-xl lg:text-lg  dark:text-black font-semibold mb-2 p-2">Role Permissions : </h3>
                 <ul class="list-disc list-outside pl-6">
                   <li v-for="permission in roleDetailData?.[entry?.id]?.data?.permissions ?? []" :key="permission.id"
-                    class="mb-1 p-2 rounded-lg border-b dark:text-slate-800 dark:border-gray-400 border-gray-300 hover:bg-blue-300">
-                    <div class="font-semibold dark:text-slate-800 ">{{ permission.name }}.</div>
-                    <div class="text-sm dark:text-slate-800 text-gray-600">{{ permission.description }}</div>
+                    class="mb-1 p-2 rounded-lg border-b dark:text-slate-800 dark:border-gray-400 border-gray-300 hover:bg-blue-200">
+                    <div class="font-semibold text-lg lg:text-lg dark:text-gray-800 ">{{ permission.name }}.</div>
+                    <div class="text-sm lg:text-lg dark:text-slate-800 text-gray-600">{{ permission.description }}</div>
                   </li>
                 </ul>
               </div>
@@ -98,12 +100,12 @@
       <div class="w-[80vw] select-none">
         <shell-indicator-loading v-if="loading" />
 
-        <div class="mt-2 mb-1 text-gray-500 text-sm">Name</div>
+        <div class="mt-2 mb-2 text-gray-700 text-lg lg:text-sm">Role Name</div>
         <input v-model="formUserInputForEditingRole.name"
           class="w-full px-3 py-1 rounded-md border border-slate-400 hover:border-red-200 active:border-red-500 focus:border-red-400 focus:outline-none" />
 
-        <div class="mt-4 mb-1 text-gray-500 text-sm">Select Permissions</div>
-        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 mb-4 text-sm" role="alert">
+        <div class="mt-4 mb-1 text-gray-700 text-lg lg:text-sm">Select Permissions</div>
+        <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-900 p-4 mb-4 text-lg lg:text-sm" role="alert">
           <p>
             A role defines a set of permissions that can be assigned to users. By selecting permissions, you are
             specifying what actions users with this role can perform within the system.
