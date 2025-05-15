@@ -58,7 +58,7 @@ async function handleAddAdminChatIndex() {
   emits('toggleGlobalLoading', true)
 
   try {
-    const { data, error } = await useApi<UpsertResponse<AdminChatQueueExtended>>('/chats/assign', {
+    const { data, error } = await useApi<UpsertResponse<AdminChatQueueExtended>>('/new/admin/chat-rooms/', {
       method: 'POST',
     })
 
@@ -86,6 +86,7 @@ async function handleAddAdminChatIndex() {
         'accept-admin-chat',
         data.value?.data?.assigned_chat_room ?? {},
         data.value?.data?.assigned_chat_room?.participant[otherParticipantIndex]?.user_id ?? ''
+
       )
     } else {
       const errMsg = error.value?.data?.message ?? 'An Error was Accrued, Please try again'

@@ -50,7 +50,7 @@ const activeChatDetails = ref<ChatRoomDetails>()
 const activeChatDetailsPagination = ref()
 
 const { data: chatRooms, status: chatRoomsStatus } = await useAsyncData('chatRooms', () =>
-  useApi<Response<ChatRoom[]>>('/new/admin/chat-rooms?unassigned=true', {
+  useApi<Response<ChatRoom[]>>('/new/admin/chat-rooms/?unassigned=true', {
     method: 'GET',
   }).then((res) => res.data.value?.data)
 )
