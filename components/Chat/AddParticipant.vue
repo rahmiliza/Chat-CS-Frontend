@@ -143,7 +143,7 @@
   
     try {
       const { data, error } = await useApi<ResponseWithPagination>(
-        `/admin/chat-rooms/${activeChatData.value.id}/chats?offset=${nextCursor}&sortBy=created_at&order=DESC`,
+        `new/admin/chat-rooms/${activeChatData.value.id}/`,
         { method: 'GET' }
       )
       if (data.value?.data) {
@@ -166,7 +166,7 @@
     }
   }
   
-  const { data, pending } = await useApi<Response<ChatRoom[]>>('/admin/chat-rooms', { method: 'GET' })
+  const { data, pending } = await useApi<Response<ChatRoom[]>>('new/admin/chat-rooms', { method: 'GET' })
   const { data: adminChatQueueData, pending: adminChatQueuePending } = await useApi<Response<AdminChatQueue>>(
     '/admin/chats/admin-queues',
     { method: 'GET' }
@@ -248,7 +248,7 @@
   
     try {
       const { data, error } = await useApi<Response>(
-        `/admin/chat-rooms/${activeChatData.value.id}/chat-participant`,
+        `new/admin/chat-rooms/${activeChatData.value.id}/chat-participant`,
         {
           method: 'POST',
           body: { user_identifier: participantInput.value },

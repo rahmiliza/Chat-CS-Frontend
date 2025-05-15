@@ -284,7 +284,7 @@
     openModalAddNewParticipant.value = true
     loadingGetListAdmin.value = true
     try {
-      const { data, error } = await useApi<UpsertResponse<User[]>>('/admins/chat-rooms/admin?per_page=1000', {
+      const { data, error } = await useApi<UpsertResponse<User[]>>('new/admin/chat-rooms/admin?per_page=1000', {
         method: 'GET',
       })
 
@@ -314,7 +314,7 @@
     emitLoading(true)
 
     try {
-      const { data, error } = await useApi<UpsertResponse<ChatRoom>>('/chats/add-participant', {
+      const { data, error } = await useApi<UpsertResponse<ChatRoom>>('new/chats/add-participant', {
         method: 'POST',
         body: {
           room_id: props?.activeChatData?.id ?? '',
@@ -365,7 +365,7 @@
     try {
       const otherParticipantId = props?.activeChatData?.participant[getOtherParticipantIndex()]?.user_id
 
-      const { data, error } = await useApi<UpsertResponse<Chat>>(`admin/chat-rooms/${props?.activeChatData?.id}/chat`, {
+      const { data, error } = await useApi<UpsertResponse<Chat>>(`new/admin/chat-rooms/${props?.activeChatData?.id}/chat`, {
         method: 'POST',
         body: {
           message: chatMessage ?? '',
@@ -384,7 +384,7 @@
 
         socket.emit('send-message', roomValue, props.activeChatData?.id, otherParticipantId)
       } else {
-        const errMsg = error.value?.data?.message ?? 'An Error was Accrued, Please try again1'
+        const errMsg = error.value?.data?.message ?? 'errorrr kenapa'
         toast.add({ message: errMsg, type: "error" })
       }
     } catch (e: any) {
@@ -399,7 +399,7 @@
     emits('toggleGlobalLoading', true)
 
     try {
-      const { data, error } = await useApi<Response<ChatRoom>>('/admin/chat-rooms/' + props.activeChatDetails?.chat_room?.id + '/close-chat', {
+      const { data, error } = await useApi<Response<ChatRoom>>('new/admin/chat-rooms/' + props.activeChatDetails?.chat_room?.id + '/close-chat', {
         method: 'POST',
         body: {
           room_id: props.activeChatDetails?.chat_room?.id,

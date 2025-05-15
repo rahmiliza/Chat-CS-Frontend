@@ -109,7 +109,7 @@ async function fetchChatRoomDetails(nextCursor: string = '') {
 
   try {
     const { data, error } = await useApi<ResponseWithPagination>(
-      `/admin/chat-rooms/${activeChatData.value?.id}/chats?offset=${nextCursor}&sortBy=created_at&order=DESC`,
+      `new/admin/chat-rooms/is_active=false&unassigned=false`,
       { method: 'GET' }
     )
     if (data.value?.data) {

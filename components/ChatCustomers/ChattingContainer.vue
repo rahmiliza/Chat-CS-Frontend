@@ -396,7 +396,7 @@ async function handleFinishChat() {
   emits('toggleGlobalLoading', true)
 
   try {
-    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('/admin/chat-rooms/' + activeChatDetails?.chat_room?.id + '/close-chat', {
+    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('new/admin/chat-rooms/' + activeChatDetails?.chat_room?.id + '/close-chat', {
       method: 'PUT',
       body: {
         room_id: props.activeChatDetails?.chat_room?.id,

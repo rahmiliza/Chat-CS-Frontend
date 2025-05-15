@@ -100,9 +100,9 @@ async function handleAddAdminChatIndex() {
   ) {
     return
   }
-
+// list for chat room
   try {
-    const { data, error } = await useApi<Response<AdminChatQueueExtended>>('admin/chat-rooms/', {
+    const { data, error } = await useApi<Response<AdminChatQueueExtended>>('new/admin/chat-rooms', {
       method: 'POST',
     })
 
