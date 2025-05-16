@@ -4,7 +4,7 @@
     :class="[activeChatData?.id === chatRoomData?.id ? 'bg-blue-200/50 !border-blue-300' : '']" @click="selectChatRoom">
     <div
       class="flex w-12 h-12 aspect-square items-center justify-center rounded-full bg-blue-300 dark:bg-blue-300 uppercase">
-      <span>{{ chatRoomData?.participant[getOtherParticipantIndex()]?.display_name[0] }}</span>
+      <span>{{ chatRoomData?.participant?.[getOtherParticipantIndex()]?.display_name?.[0] }}</span>
     </div>
     <div class="w-full overflow-hidden">
       <template v-if="chatRoomData?.participant && chatRoomData.participant.length > 2">
@@ -18,9 +18,9 @@
         </div>
       </template>
       <div v-else class="w-full truncate font-semibold flex items-center gap-2">
-        <Icon :name="getRoleIcon(chatRoomData?.participant[getOtherParticipantIndex()]?.user_id)"
+        <Icon :name="getRoleIcon(chatRoomData?.participant?.[getOtherParticipantIndex()]?.user_id)"
           class="text-sm text-slate-500" />
-        {{ chatRoomData?.participant[getOtherParticipantIndex()]?.display_name }}
+        {{ chatRoomData?.participant?.[getOtherParticipantIndex()]?.display_name }}
       </div>
       <template v-if="chatRoomData?.last_message">
         <div class="w-full truncate text-sm">
@@ -81,9 +81,9 @@ function getOtherParticipantIndex() {
 }
 
 function getRoleIcon(userId: string) {
-  if (userId.startsWith('customers:')) {
+  if (userId?.startsWith('customers:')) {
     return 'hugeicons:shopping-cart-02'
-  } else if (userId.startsWith('merchants:')) {
+  } else if (userId?.startsWith('merchants:')) {
     return 'store'
   } else {
     return 'hugeicons:shield-user'
