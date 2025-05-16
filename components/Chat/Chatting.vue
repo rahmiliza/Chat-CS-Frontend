@@ -17,7 +17,7 @@
           }}
         </template>
         <template v-else class="text-black">
-          {{ activeChatData?.participant[getOtherParticipantIndex()]?.display_name }}
+          {{ activeChatData?.participant?.[getOtherParticipantIndex()]?.display_name }}
         </template>
       </div>
       <div class="flex gap-2">
@@ -363,7 +363,7 @@
     emitLoading(true)
 
     try {
-      const otherParticipantId = props?.activeChatData?.participant[getOtherParticipantIndex()]?.user_id
+      const otherParticipantId = props?.activeChatData?.participant?.[getOtherParticipantIndex()]?.user_id
 
       const { data, error } = await useApi<UpsertResponse<Chat>>(`new/admin/chat-rooms/${props?.activeChatData?.id}/chat`, {
         method: 'POST',
