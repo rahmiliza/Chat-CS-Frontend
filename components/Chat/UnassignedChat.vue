@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { io } from 'socket.io-client'
-import type { AdminChatQueue, Chat, ChatQueue, ChatRoom, ChatRoomDetails } from '~/models/chat'
+import type { AdminChatQueue, Chat, ChatQueue, ChatRoom, ChatRoomDetails, Participant } from '~/models/chat'
 import type { Response, ResponseWithPagination } from '~/models/response'
 
 const { user } = useAuthStore();
@@ -50,21 +50,49 @@ const activeChatDetails = ref<ChatRoomDetails>()
 const activeChatDetailsPagination = ref()
 
 const { data: chatRooms, status: chatRoomsStatus } = await useAsyncData('chatRooms', () =>
-  useApi<Response<ChatRoom[]>>('nnew/admin/chat-rooms/?unassigned=true', {
+  useApi<Response<ChatRoom[]>>('new/admin/chat-rooms/?unassigned=true', {
     method: 'GET',
   }).then((res) => res.data.value?.data)
 )
 
-watchEffect(() => {
+watchEffect(async () => {
   if (Array.isArray(chatRooms.value)) {
-    listChatRoom.value = [...chatRooms.value].sort(sortChatRoom)
+    await fetchChatRoomDetailsForAll(chatRooms.value)
+    // listChatRoom.value = [...chatRooms.value].sort(sortChatRoom)
   }
 })
 
+async function fetchChatRoomDetailsForAll(chatRooms: ChatRoom[]) {
+  try {
+    const chatRoomsWithDetails = await Promise.all(
+      chatRooms.map(async (chatRoom) => {
+        const participantsResponse = await useApi<Response<Participant[]>>(
+          `/new/admin/chat-rooms/${chatRoom.id}/chat-participant`
+        );
+        const messagesResponse = await useApi<ResponseWithPagination>(
+          `/new/admin/chat-rooms/${chatRoom.id}/chats`
+        );
+
+        return {
+          ...chatRoom,
+          participant: participantsResponse.data.value?.data || [],
+          chats: messagesResponse.data.value?.data || [],
+        };
+      })
+    );
+
+    listChatRoom.value = chatRoomsWithDetails;
+    console.log('Chat rooms with details:', listChatRoom);
+  } catch (e) {
+    console.error('Error fetching chat room details:', e);
+    toast.add({ message: 'Gagal mengambil data chat room details', type: 'error' });
+  }
+}
+
 function sortChatRoom(a: ChatRoom, b: ChatRoom) {
-//   if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') return -1
-//   if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') return 1
-  return b.last_message.created_at - a.last_message.created_at
+  //   if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') return -1
+  //   if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') return 1
+  return b?.last_message?.created_at - a?.last_message?.created_at
 }
 
 function toggleGlobalLoading(loadingValue: boolean) {
@@ -112,8 +140,7 @@ async function fetchChatRoomDetails(nextCursor: string = '') {
 
   try {
     const { data, error } = await useApi<ResponseWithPagination>(
-      
-       `new/admin/chat-rooms/?is_active=true`,
+      `/new/admin/chat-rooms/${activeChatData.value?.id}/chats`,
       // `new/admin/chat-rooms/${activeChatData.value?.id}/chats?offset=${nextCursor}&sortBy=created_at&order=DESC`,
       { method: 'GET' }
     )

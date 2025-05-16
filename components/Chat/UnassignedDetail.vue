@@ -16,7 +16,7 @@
         </template>
         <template v-else class="text-black">
           <div class="text-xs font-normal text-gray-400">Customer</div>
-          <div>{{ activeChatData?.participant[getOtherParticipantIndex()]?.display_name }}</div>
+          <div>{{ activeChatData?.participant?.[getOtherParticipantIndex()]?.display_name }}</div>
 
         </template>
       </div>

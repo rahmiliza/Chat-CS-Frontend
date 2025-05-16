@@ -3,7 +3,7 @@
     class="relative w-full flex items-center border border-white gap-4 p-2 duration-300 rounded-lg hover:cursor-pointer hover:bg-red-300/50"
     :class="[activeChatData?.id === chatRoomData?.id ? 'bg-red-200/50 !border-red-300' : '']" @click="selectChatRoom">
     <div class="flex w-12 h-12 aspect-square items-center justify-center rounded-full bg-red-300 dark:bg-gray-700 uppercase">
-      <span>{{ chatRoomData?.participant[getOtherParticipantIndex()]?.display_name[0] }}</span>
+      <span>{{ chatRoomData?.participant?.[getOtherParticipantIndex()]?.display_name[0] }}</span>
     </div>
     <div class="w-full overflow-hidden">
       <template v-if="chatRoomData?.participant && chatRoomData.participant.length > 2">
@@ -17,7 +17,7 @@
         </div>
       </template>
       <div v-else class="w-full truncate font-bold text-gray-600 flex items-center gap-2">
-        {{ chatRoomData?.participant[getOtherParticipantIndex()]?.display_name }}
+        {{ chatRoomData?.participant?.[getOtherParticipantIndex()]?.display_name }}
       </div>
       <template v-if="chatRoomData?.last_message">
         <div class="w-full truncate text-sm">
