@@ -4,15 +4,15 @@
       <LoadingIndicator />
     </template>
     <div class="w-full h-full flex bg-white overflow-hidden min-w-[800px]">
-      <ChatHistoryRoomList :list-chat-room="listChatRoom" :active-chat-data="activeChatData"
+      <ChatHistoryRoomList :list-chat-room="historyListChatRoom" :active-chat-data="historyActiveChatData"
         :admin-chat-queue="adminChatQueue" @update-chat-list-loading="toggleChatListLoading"
         @update-active-chat="handleSetActiveChatData" @update-admin-chat-queue="updateAdminChatQueue"
         @toggle-global-loading="toggleGlobalLoading" @update-chat-list-data="updateChatListData"
         @update-active-chat-details="updateActiveChatDetails" />
-      <template v-if="activeChatData && activeChatDetails">
-        <ChatHistoryChatting :active-chat-data="activeChatData" :active-chat-details="activeChatDetails"
+      <template v-if="historyActiveChatData && historyActiveChatDetails">
+        <ChatHistoryChatting :active-chat-data="historyActiveChatData" :active-chat-details="historyActiveChatDetails"
           :chatting-container-loading="chattingContainerLoading"
-          :active-chat-details-pagination="activeChatDetailsPagination" :list-chat-room="listChatRoom"
+          :active-chat-details-pagination="historyActiveChatDetailsPagination" :list-chat-room="historyListChatRoom"
           @update-active-chat="handleSetActiveChatData" @update-active-chat-details="updateActiveChatDetails"
           @update-chatting-container-loading="toggleChattingContainerLoading"
           @update-chat-list-data="updateChatListData" @toggle-global-loading="toggleGlobalLoading"
@@ -35,34 +35,63 @@ const globalLoading = ref(false)
 const chattingContainerLoading = ref(false)
 const listChatLoading = ref(false)
 
-const listChatRoom = ref<ChatRoom[]>([])
+const historyListChatRoom = ref<ChatRoom[]>([])
 const adminChatQueue = ref<AdminChatQueue>()
 
-const activeChatData = ref<ChatRoom | null>()
-const activeChatDetails = ref<ChatRoomDetails>()
-const activeChatDetailsPagination = ref()
+const historyActiveChatData = ref<ChatRoom | null>()
+const historyActiveChatDetails = ref<ChatRoomDetails>()
+const historyActiveChatDetailsPagination = ref()
 
-const { data: chatRooms, pending: pendingChatRooms } = await useAsyncData('chatRooms', () =>
+const { data: historyChatRooms } = await useAsyncData('historyChatRooms', () =>
   useApi<Response<ChatRoom[]>>('/new/admin/chat-rooms/', {
     method: 'GET',
-    body: {
-      is_active: false,
-      unassigned: true,
-    },
   }).then((res) => res.data.value?.data)
 )
 
-watchEffect(() => {
-  if (Array.isArray(chatRooms.value)) {
-    listChatRoom.value = [...chatRooms.value].sort(sortChatRoom)
+watchEffect(async () => {
+  if (Array.isArray(historyChatRooms.value)) {
+    await fetchHistoryChatRoomDetailsForAll(historyChatRooms.value)
+    // historyListChatRoom.value = [...historyChatRooms.value].sort(sortChatRoom)
   }
 })
 
-function sortChatRoom(a: ChatRoom, b: ChatRoom) {
-  if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') return -1
-  if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') return 1
-  return b.last_message.created_at - a.last_message.created_at
+async function fetchHistoryChatRoomDetailsForAll(historyChatRooms: ChatRoom[]) {
+  try {
+    const historyChatRoomsWithDetails = await Promise.all(
+      historyChatRooms.map(async (chatRoom) => {
+        const participantsResponse = await useApi<Response<Participant[]>>(
+          `/new/admin/chat-rooms/${chatRoom.id}/chat-participant`
+        );
+        const messagesResponse = await useApi<ResponseWithPagination>(
+          `/new/admin/chat-rooms/${chatRoom.id}/chats`
+        );
+
+        return {
+          ...chatRoom,
+          participant: participantsResponse.data.value?.data || [],
+          chats: messagesResponse.data.value?.data || [],
+        };
+      })
+    );
+
+    historyListChatRoom.value = historyChatRoomsWithDetails;
+    console.log('Chat rooms with details:', historyListChatRoom);
+  } catch (e) {
+    console.error('Error fetching chat room details:', e);
+    toast.add({ message: 'Gagal mengambil data chat room details', type: 'error' });
+  }
 }
+// watchEffect(() => {
+//   if (Array.isArray(historyChatRooms.value)) {
+//     historyListChatRoom.value = [...historyChatRooms.value].sort(sortChatRoom)
+//   }
+// })
+
+// function sortChatRoom(a: ChatRoom, b: ChatRoom) {
+//   if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') return -1
+//   if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') return 1
+//   return b.last_message.created_at - a.last_message.created_at
+// }
 
 function toggleGlobalLoading(loadingValue: boolean) {
   globalLoading.value = loadingValue
@@ -78,11 +107,11 @@ function toggleChattingContainerLoading(loadingValue: boolean) {
 
 function handleSetActiveChatData(chatRoomData: ChatRoom) {
   if (chatRoomData == null) {
-    activeChatData.value = null
+    historyActiveChatData.value = null
     return
   }
 
-  activeChatData.value = { ...chatRoomData }
+  historyActiveChatData.value = { ...chatRoomData }
   fetchChatRoomDetails()
 }
 
@@ -91,37 +120,37 @@ function updateAdminChatQueue(newAdminChatQueue: AdminChatQueue) {
 }
 
 function updateActiveChatDetails(newChatDetails: ChatRoomDetails) {
-  activeChatDetails.value = { ...newChatDetails }
+  historyActiveChatDetails.value = { ...newChatDetails }
 }
 
 function updateChatListData(newChatListData: ChatRoom[]) {
-  listChatRoom.value = [...newChatListData]
+  historyListChatRoom.value = [...newChatListData]
 }
 
 function triggerFetchChatRoomDetails() {
-  fetchChatRoomDetails(activeChatDetailsPagination.value?.next_page_cursor || '')
+  fetchChatRoomDetails(historyActiveChatDetailsPagination.value?.next_page_cursor || '')
 }
 
 async function fetchChatRoomDetails(nextCursor: string = '') {
-  if (activeChatData.value == null) return
+  if (historyActiveChatData.value == null) return
 
   chattingContainerLoading.value = true
 
   try {
     const { data, error } = await useApi<ResponseWithPagination>(
-      `new/admin/chat-rooms/is_active=false&unassigned=false`,
+      `/new/admin/chat-rooms/${historyActiveChatData.value?.id}/chats`,
       { method: 'GET' }
     )
     if (data.value?.data) {
       if (nextCursor) {
-        activeChatDetails.value?.chats.push(...data.value?.data)
+        historyActiveChatDetails.value?.chats.push(...data.value?.data)
       } else {
-        activeChatDetails.value = { chat_room: activeChatData.value, chats: data.value?.data }
+        historyActiveChatDetails.value = { chat_room: historyActiveChatData.value, chats: data.value?.data }
       }
       console.log(nextCursor)
-      console.log(activeChatDetails.value)
+      console.log(historyActiveChatDetails.value)
 
-      activeChatDetailsPagination.value = data.value?.pagination
+      historyActiveChatDetailsPagination.value = data.value?.pagination
     } else {
       const errMsg = error.value?.data?.message ?? 'An Error was Accrued, Please try again'
       toast.add({ message: errMsg, type: "error" })
