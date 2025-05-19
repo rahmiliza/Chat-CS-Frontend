@@ -20,12 +20,12 @@
       <div v-else class="w-full truncate font-semibold flex items-center gap-2">
         <Icon :name="getRoleIcon(chatRoomData?.participant?.[getOtherParticipantIndex()]?.user_id)"
           class="text-sm text-slate-500" />
-        {{ chatRoomData?.participant?.[getOtherParticipantIndex()]?.display_name }}
+        {{ chatRoomData?.participant?.[getOtherParticipantIndex()]?.display_name != '' ? chatRoomData?.participant?.[getOtherParticipantIndex()]?.display_name : 'Tidak Ada Nama' }}
       </div>
-      <template v-if="chatRoomData?.last_message">
+      <template v-if="chatRoomData?.chats">
         <div class="w-full truncate text-sm">
-          <div v-if="chatRoomData?.last_message?.message_type === 'TEXT'" class="text-slate-600">
-            {{ chatRoomData?.last_message?.message }}
+          <div v-if="chatRoomData?.chats?.[0]?.message_type === 'TEXT'" class="text-slate-600">
+            {{ chatRoomData?.chats?.[0]?.message }}
           </div>
           <div v-else class="flex gap-1 items-center text-slate-500">
             <Icon name="hugeicons:image-03" />
@@ -74,7 +74,6 @@ function selectChatRoom() {
 
 function getOtherParticipantIndex() {
   const otherParticipantIndex = props.chatRoomData?.participant?.findIndex((item) => item?.user_id !== user?.id)
-
   if (otherParticipantIndex > -1) return otherParticipantIndex
 
   return 0
