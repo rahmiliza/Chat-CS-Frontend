@@ -25,7 +25,7 @@ export interface Chat {
     created_at: number
     updated_at: number
     closed_at: number | null
-    last_message: Chat
+    chats: Chat[]
     participant: Participant[]
   }
   
