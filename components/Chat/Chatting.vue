@@ -374,7 +374,7 @@
         },
       })
 
-      if (data.value?.status) {
+      if (data.value?.ok) {
         message.value = null
 
         const roomValue = {
@@ -420,15 +420,15 @@
           tempListChat[chatIndex] = { ...tempListChat[chatIndex], ...data.value?.data }
 
           // Sorting listChatRoom based on last_message.created_at and status
-          tempListChat.sort((a, b) => {
-            if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
-              return -1
-            } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
-              return 1
-            } else {
-              return b.last_message.created_at - a.last_message.created_at
-            }
-          })
+          // tempListChat.sort((a, b) => {
+          //   if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
+          //     return -1
+          //   } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
+          //     return 1
+          //   } else {
+          //     return b.last_message.created_at - a.last_message.created_at
+          //   }
+          // })
           emits('updateChatListData', tempListChat)
           emits('updateActiveChat', null)
         }
