@@ -1,18 +1,18 @@
 <template>
   <div class="w-full  h-[calc(100%-34px)]">
-    <template v-if="chatRoomsStatus === 'pending' || globalLoading">
+    <template v-if="unassignedChatRoomsStatus === 'pending' || globalLoading">
       <LoadingIndicator />
     </template>
     <div class="w-full h-full flex bg-white overflow-hidden min-w-[800px]">
-      <ChatUnassignedRoomList :list-chat-room="listChatRoom" :active-chat-data="activeChatData"
+      <ChatUnassignedRoomList :list-chat-room="unassignedListChatRoom" :active-chat-data="activeUnassignedChatData"
         :admin-chat-queue="adminChatQueue" @update-chat-list-loading="toggleChatListLoading"
         @update-active-chat="handleSetActiveChatData" @update-admin-chat-queue="updateAdminChatQueue"
         @toggle-global-loading="toggleGlobalLoading" @update-chat-list-data="updateChatListData"
         @update-active-chat-details="updateActiveChatDetails" />
-      <template v-if="activeChatData && activeChatDetails">
-        <ChatUnassignedDetail :active-chat-data="activeChatData" :active-chat-details="activeChatDetails"
+      <template v-if="activeUnassignedChatData && activeUnassignedChatDetails">
+        <ChatUnassignedDetail :active-chat-data="activeUnassignedChatData" :active-chat-details="activeUnassignedChatDetails"
           :chatting-container-loading="chattingContainerLoading"
-          :active-chat-details-pagination="activeChatDetailsPagination" :list-chat-room="listChatRoom"
+          :active-chat-details-pagination="activeUnassignedChatDetailsPagination" :list-chat-room="unassignedListChatRoom"
           @update-active-chat="handleSetActiveChatData" @update-active-chat-details="updateActiveChatDetails"
           @update-chatting-container-loading="toggleChattingContainerLoading"
           @update-chat-list-data="updateChatListData" @toggle-global-loading="toggleGlobalLoading"
@@ -42,30 +42,30 @@ const globalLoading = ref(false)
 const chattingContainerLoading = ref(false)
 const listChatLoading = ref(false)
 
-const listChatRoom = ref<ChatRoom[]>([])
+const unassignedListChatRoom = ref<ChatRoom[]>([])
 const adminChatQueue = ref<AdminChatQueue>()
 
-const activeChatData = ref<ChatRoom | null>()
-const activeChatDetails = ref<ChatRoomDetails>()
-const activeChatDetailsPagination = ref()
+const activeUnassignedChatData = ref<ChatRoom | null>()
+const activeUnassignedChatDetails = ref<ChatRoomDetails>()
+const activeUnassignedChatDetailsPagination = ref()
 
-const { data: chatRooms, status: chatRoomsStatus } = await useAsyncData('chatRooms', () =>
+const { data: unassignedChatRooms, status: unassignedChatRoomsStatus } = await useAsyncData('unassignedChatRooms', () =>
   useApi<Response<ChatRoom[]>>('new/admin/chat-rooms/?unassigned=true', {
     method: 'GET',
   }).then((res) => res.data.value?.data)
 )
 
 watchEffect(async () => {
-  if (Array.isArray(chatRooms.value)) {
-    await fetchChatRoomDetailsForAll(chatRooms.value)
-    // listChatRoom.value = [...chatRooms.value].sort(sortChatRoom)
+  if (Array.isArray(unassignedChatRooms.value)) {
+    await fetchUnassignedChatRoomDetailsForAll(unassignedChatRooms.value)
+    // unassignedListChatRoom.value = [...unassignedChatRooms.value].sort(sortChatRoom)
   }
 })
 
-async function fetchChatRoomDetailsForAll(chatRooms: ChatRoom[]) {
+async function fetchUnassignedChatRoomDetailsForAll(unassignedChatRooms: ChatRoom[]) {
   try {
-    const chatRoomsWithDetails = await Promise.all(
-      chatRooms.map(async (chatRoom) => {
+    const unassignedChatRoomsWithDetails = await Promise.all(
+      unassignedChatRooms.map(async (chatRoom) => {
         const participantsResponse = await useApi<Response<Participant[]>>(
           `/new/admin/chat-rooms/${chatRoom.id}/chat-participant`
         );
@@ -81,8 +81,8 @@ async function fetchChatRoomDetailsForAll(chatRooms: ChatRoom[]) {
       })
     );
 
-    listChatRoom.value = chatRoomsWithDetails;
-    console.log('Chat rooms with details:', listChatRoom);
+    unassignedListChatRoom.value = unassignedChatRoomsWithDetails;
+    console.log('Chat rooms with details:', unassignedListChatRoom);
   } catch (e) {
     console.error('Error fetching chat room details:', e);
     toast.add({ message: 'Gagal mengambil data chat room details', type: 'error' });
@@ -109,11 +109,11 @@ function toggleChattingContainerLoading(loadingValue: boolean) {
 
 function handleSetActiveChatData(chatRoomData: ChatRoom) {
   if (chatRoomData == null) {
-    activeChatData.value = null
+    activeUnassignedChatData.value = null
     return
   }
 
-  activeChatData.value = { ...chatRoomData }
+  activeUnassignedChatData.value = { ...chatRoomData }
   fetchChatRoomDetails()
 }
 
@@ -122,38 +122,38 @@ function updateAdminChatQueue(newAdminChatQueue: AdminChatQueue) {
 }
 
 function updateActiveChatDetails(newChatDetails: ChatRoomDetails) {
-  activeChatDetails.value = { ...newChatDetails }
+  activeUnassignedChatDetails.value = { ...newChatDetails }
 }
 
 function updateChatListData(newChatListData: ChatRoom[]) {
-  listChatRoom.value = [...newChatListData]
+  unassignedListChatRoom.value = [...newChatListData]
 }
 
 function triggerFetchChatRoomDetails() {
-  fetchChatRoomDetails(activeChatDetailsPagination.value?.next_page_cursor || '')
+  fetchChatRoomDetails(activeUnassignedChatDetailsPagination.value?.next_page_cursor || '')
 }
 
 async function fetchChatRoomDetails(nextCursor: string = '') {
-  if (activeChatData.value == null) return
+  if (activeUnassignedChatData.value == null) return
 
   chattingContainerLoading.value = true
 
   try {
     const { data, error } = await useApi<ResponseWithPagination>(
-      `/new/admin/chat-rooms/${activeChatData.value?.id}/chats`,
-      // `new/admin/chat-rooms/${activeChatData.value?.id}/chats?offset=${nextCursor}&sortBy=created_at&order=DESC`,
+      `/new/admin/chat-rooms/${activeUnassignedChatData.value?.id}/chats`,
+      // `new/admin/chat-rooms/${activeUnassignedChatData.value?.id}/chats?offset=${nextCursor}&sortBy=created_at&order=DESC`,
       { method: 'GET' }
     )
     if (data.value?.data) {
       if (nextCursor) {
-        activeChatDetails.value?.chats.push(...data.value?.data)
+        activeUnassignedChatDetails.value?.chats.push(...data.value?.data)
       } else {
-        activeChatDetails.value = { chat_room: activeChatData.value, chats: data.value?.data }
+        activeUnassignedChatDetails.value = { chat_room: activeUnassignedChatData.value, chats: data.value?.data }
       }
       console.log(nextCursor)
-      console.log(activeChatDetails.value)
+      console.log(activeUnassignedChatDetails.value)
 
-      activeChatDetailsPagination.value = data.value?.pagination
+      activeUnassignedChatDetailsPagination.value = data.value?.pagination
     } else {
       const errMsg = error.value?.data?.message ?? 'An Error was Accrued, Please try again'
       toast.add({ message: errMsg, type: "error" })
@@ -167,27 +167,27 @@ async function fetchChatRoomDetails(nextCursor: string = '') {
 }
 
 
-watch(activeChatData, (_) => {
+watch(activeUnassignedChatData, (_) => {
   socket.off('receive-message')
 
   socket.emit('join-room', user?.id)
 
-  if (activeChatData.value) {
-    socket.emit('join-room', activeChatData.value?.id)
+  if (activeUnassignedChatData.value) {
+    socket.emit('join-room', activeUnassignedChatData.value?.id)
   }
 
   socket.on('receive-message', (lastMessage: Chat) => {
-    if (activeChatDetails.value?.chat_room?.id !== lastMessage?.chat_room_id) return
+    if (activeUnassignedChatDetails.value?.chat_room?.id !== lastMessage?.chat_room_id) return
 
-    activeChatDetails.value?.chats?.splice(0, 0, lastMessage)
+    activeUnassignedChatDetails.value?.chats?.splice(0, 0, lastMessage)
 
-    const lastMessageIndexRoom = listChatRoom.value?.findIndex((item) => item?.id === lastMessage?.chat_room_id)
+    const lastMessageIndexRoom = unassignedListChatRoom.value?.findIndex((item) => item?.id === lastMessage?.chat_room_id)
 
-    if (lastMessageIndexRoom > -1 && listChatRoom.value[lastMessageIndexRoom]) {
-      listChatRoom.value[lastMessageIndexRoom].last_message = { ...lastMessage }
+    if (lastMessageIndexRoom > -1 && unassignedListChatRoom.value[lastMessageIndexRoom]) {
+      unassignedListChatRoom.value[lastMessageIndexRoom].last_message = { ...lastMessage }
 
-      // Sorting listChatRoom based on last_message.created_at and status
-      listChatRoom.value.sort((a, b) => {
+      // Sorting unassignedListChatRoom based on last_message.created_at and status
+      unassignedListChatRoom.value.sort((a, b) => {
         if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
           return -1
         } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
@@ -216,14 +216,14 @@ onMounted(() => {
   })
 
   socket.on('chat-room', (chatRoom: ChatRoom) => {
-    if (listChatRoom.value.findIndex((item) => item?.id === chatRoom?.id) < 0) {
-      listChatRoom.value.push(chatRoom)
+    if (unassignedListChatRoom.value.findIndex((item) => item?.id === chatRoom?.id) < 0) {
+      unassignedListChatRoom.value.push(chatRoom)
     } else {
-      listChatRoom.value[listChatRoom.value.findIndex((item) => item?.id === chatRoom?.id)] = { ...chatRoom }
+      unassignedListChatRoom.value[unassignedListChatRoom.value.findIndex((item) => item?.id === chatRoom?.id)] = { ...chatRoom }
     }
 
-    // Sorting listChatRoom based on last_message.created_at and status
-    listChatRoom.value.sort((a, b) => {
+    // Sorting unassignedListChatRoom based on last_message.created_at and status
+    unassignedListChatRoom.value.sort((a, b) => {
       if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
         return -1
       } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
