@@ -10,10 +10,11 @@
         @toggle-global-loading="toggleGlobalLoading" @update-chat-list-data="updateChatListData"
         @update-active-chat-details="updateActiveChatDetails" />
       <template v-if="activeUnassignedChatData && activeUnassignedChatDetails">
-        <ChatUnassignedDetail :active-chat-data="activeUnassignedChatData" :active-chat-details="activeUnassignedChatDetails"
-          :chatting-container-loading="chattingContainerLoading"
-          :active-chat-details-pagination="activeUnassignedChatDetailsPagination" :list-chat-room="unassignedListChatRoom"
-          @update-active-chat="handleSetActiveChatData" @update-active-chat-details="updateActiveChatDetails"
+        <ChatUnassignedDetail :active-chat-data="activeUnassignedChatData"
+          :active-chat-details="activeUnassignedChatDetails" :chatting-container-loading="chattingContainerLoading"
+          :active-chat-details-pagination="activeUnassignedChatDetailsPagination"
+          :list-chat-room="unassignedListChatRoom" @update-active-chat="handleSetActiveChatData"
+          @update-active-chat-details="updateActiveChatDetails"
           @update-chatting-container-loading="toggleChattingContainerLoading"
           @update-chat-list-data="updateChatListData" @toggle-global-loading="toggleGlobalLoading"
           @trigger-fetch-chat-room-details="triggerFetchChatRoomDetails" />
@@ -77,6 +78,7 @@ async function fetchUnassignedChatRoomDetailsForAll(unassignedChatRooms: ChatRoo
           ...chatRoom,
           participant: participantsResponse.data.value?.data || [],
           chats: messagesResponse.data.value?.data || [],
+          last_message: messagesResponse.data.value?.data[0] || null,
         };
       })
     );
@@ -177,6 +179,7 @@ watch(activeUnassignedChatData, (_) => {
   }
 
   socket.on('receive-message', (lastMessage: Chat) => {
+    console.log('unassignedLastMessage', lastMessage)
     if (activeUnassignedChatDetails.value?.chat_room?.id !== lastMessage?.chat_room_id) return
 
     activeUnassignedChatDetails.value?.chats?.splice(0, 0, lastMessage)
@@ -186,17 +189,12 @@ watch(activeUnassignedChatData, (_) => {
     if (lastMessageIndexRoom > -1 && unassignedListChatRoom.value[lastMessageIndexRoom]) {
       unassignedListChatRoom.value[lastMessageIndexRoom].last_message = { ...lastMessage }
 
-      // Sorting unassignedListChatRoom based on last_message.created_at and status
       unassignedListChatRoom.value.sort((a, b) => {
-        if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
-          return -1
-        } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
-          return 1
-        } else {
-          return b.last_message.created_at - a.last_message.created_at
-        }
+        return b.last_message.created_at - a.last_message.created_at
       })
     }
+    
+    console.log('unassignedListChatRooms', unassignedListChatRoom)
   })
 })
 
@@ -215,7 +213,23 @@ onMounted(() => {
     }
   })
 
-  socket.on('chat-room', (chatRoom: ChatRoom) => {
+
+  socket.on('last-message-room', (lastMessage: Chat) => {
+    console.log('last-message-room', lastMessage)
+    const lastMessageIndexRoom = unassignedListChatRoom.value?.findIndex((item) => item?.id === lastMessage?.chat_room_id)
+
+    if (lastMessageIndexRoom > -1 && unassignedListChatRoom.value[lastMessageIndexRoom]) {
+      unassignedListChatRoom.value[lastMessageIndexRoom].last_message = { ...lastMessage }
+
+      unassignedListChatRoom.value.sort((a, b) => {
+        return b.last_message.created_at - a.last_message.created_at
+      })
+    }
+    
+    console.log('last-message-room', unassignedListChatRoom)
+  })
+
+  socket.on('unassigned-room', (chatRoom: ChatRoom) => {
     if (unassignedListChatRoom.value.findIndex((item) => item?.id === chatRoom?.id) < 0) {
       unassignedListChatRoom.value.push(chatRoom)
     } else {
@@ -223,15 +237,15 @@ onMounted(() => {
     }
 
     // Sorting unassignedListChatRoom based on last_message.created_at and status
-    unassignedListChatRoom.value.sort((a, b) => {
-      if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
-        return -1
-      } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
-        return 1
-      } else {
-        return b.last_message.created_at - a.last_message.created_at
-      }
-    })
+    // unassignedListChatRoom.value.sort((a, b) => {
+    //   if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
+    //     return -1
+    //   } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
+    //     return 1
+    //   } else {
+    //     return b.last_message.created_at - a.last_message.created_at
+    //   }
+    // })
   })
 })
 

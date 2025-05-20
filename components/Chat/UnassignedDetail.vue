@@ -254,17 +254,14 @@ async function handleOkAddNewParticipant() {
     })
 
     if (data.value?.ok) {
-      toast.add({ message: 'Participant added successfully', type: "success" })
+      toast.add({ message: 'Assigned chat successfully', type: "success" })
 
-      const chatIndex = props?.listChatRoom?.findIndex((item) => item?.id === props?.activeChatDetails?.chat_room?.id)
+      const updatedList = props.listChatRoom?.filter(item => item?.id !== data.value?.data?.id)
+      emits('updateChatListData', updatedList)
+      emits('updateActiveChat', null)
 
-      if (chatIndex !== undefined && chatIndex > -1 && props.listChatRoom) {
-        const tempListChat = [...props.listChatRoom]
-        tempListChat[chatIndex] = { ...tempListChat[chatIndex], ...data.value?.data }
+      socket.emit('accept-admin-chat', data.value?.data, data.value?.data?.id, data.value?.data?.participant[getOtherParticipantIndex()]?.user_id ?? '');
 
-        // emits('updateChatListData', tempListChat)
-        // emits('triggerFetchChatRoomDetails')
-      }
     } else {
       const errMsg = error.value?.data?.message ?? 'Failed to add participant, please try again'
       toast.add({ message: errMsg, type: "error" })
