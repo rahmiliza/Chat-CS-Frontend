@@ -2,39 +2,26 @@
   <div class="w-full min-h-screen px-4 py-6 bg-gray-50 dark:bg-slate-100 shadow-xl -p-2">
     <template v-if="activeChat">
       <!-- Active Chat Container -->
-      <ChatCustomersChattingContainer
-        ref="chatting"
-        :active-chat="activeChat"
-        :active-chat-details="activeChatDetails"
+      <ChatCustomersChattingContainer ref="chatting" :active-chat="activeChat" :active-chat-details="activeChatDetails"
         :chatting-container-loading="chattingContainerLoading"
-        :active-chat-details-pagination="activeChatDetailsPagination"
-        :list-chat-room="listChatRoom"
-        @update-active-chat="handleSetActiveChatData"
-        @update-active-chat-details="updateActiveChatDetails"
-        @update-chatting-container-loading="toggleChattingContainerLoading"
-        @update-chat-list-data="updateChatListData"
-        @toggle-global-loading="toggleGlobalLoading"
-        @trigger-fetch-chat-room-details="triggerFetchChatRoomDetails"
-      />
+        :active-chat-details-pagination="activeChatDetailsPagination" :list-chat-room="listChatRoom"
+        @update-active-chat="handleSetActiveChatData" @update-active-chat-details="updateActiveChatDetails"
+        @update-chatting-container-loading="toggleChattingContainerLoading" @update-chat-list-data="updateChatListData"
+        @toggle-global-loading="toggleGlobalLoading" @trigger-fetch-chat-room-details="triggerFetchChatRoomDetails" />
     </template>
 
     <!-- Empty State - No Active Chat -->
-    <div
-      v-else
-      class="max-w-md mx-auto flex flex-col items-center justify-center border-slate-900 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mt-20 space-y-4"
-    >
+    <div v-else
+      class="max-w-md mx-auto flex flex-col items-center justify-center border-slate-900 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md mt-20 space-y-4">
       <h2 class="text-lg font-semibold text-gray-500 dark:text-white text-center">
-      Create Chat Room Now
+        Create Chat Room Now
       </h2>
-      <textarea
-        v-model="message"
+      <textarea v-model="message"
         class="w-full h-24 rounded-lg border border-gray-300 dark:border-gray-600 px-4 py-3 resize-none text-slate-900 dark:text-slate-900 bg-white dark:bg-slate-100 focus:border-slate-400 focus:ring-slate-400  focus:ring-1 outline-none transition"
-        placeholder="Enter your question here..."
-      />
+        placeholder="Enter your question here..." />
       <Button
         class="w-full bg-primary text-white hover:brightness-110 py-2 rounded-lg font-medium shadow disabled:opacity-50 disabled:cursor-not-allowed transition"
-        @click="startChat"
-        :disabled="!message"      >
+        @click="startChat" :disabled="!message">
         Start Chat
       </Button>
     </div>
@@ -68,7 +55,7 @@ const socket = io(config.public.socketUrl, {
 const fetchExistingChatRoom = async () => {
   try {
     const { data } = await useAsyncData('chatRooms', () =>
-      useApi<Response<ChatRoom[]>>(`/chat-rooms?skip_closed=true&participantID=${user?.id}`, {
+      useApi<Response<ChatRoom[]>>(`/chat-rooms/`, {
         method: 'GET',
       }).then(res => res.data.value?.data ?? [])
     )
@@ -100,7 +87,7 @@ watch(activeChat, (chatRoom) => {
 }, { immediate: true })
 
 const startChat = async () => {
-  const { data } = await useApi<Response>(config.public.apiBaseUrl + '/chat-rooms', {
+  const { data } = await useApi<Response>(config.public.apiBaseUrl + '/chat-rooms/', {
     method: "POST",
     // body: {
     //   participants: [
@@ -111,8 +98,9 @@ const startChat = async () => {
 
   if (data.value?.ok) {
     activeChat.value = data.value?.data
-    await nextTick()
-    chatting.value?.startChatMessage(message.value)
+    socket.emit('unassigned-room', data.value?.data);
+    await nextTick();
+    chatting.value?.startChatMessage(message.value);
   } else {
     toast.add({ message: 'Gagal memulai chat.', type: 'error' })
   }
@@ -159,4 +147,3 @@ onUnmounted(() => {
   socket.disconnect()
 })
 </script>
-
