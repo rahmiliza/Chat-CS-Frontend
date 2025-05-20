@@ -22,10 +22,10 @@
           class="text-sm text-slate-500" />
         {{ chatRoomData?.participant?.[getOtherParticipantIndex()]?.display_name != '' ? chatRoomData?.participant?.[getOtherParticipantIndex()]?.display_name : 'Tidak Ada Nama' }}
       </div>
-      <template v-if="chatRoomData?.chats">
+      <template v-if="chatRoomData?.last_message">
         <div class="w-full truncate text-sm">
-          <div v-if="chatRoomData?.chats?.[0]?.message_type === 'TEXT'" class="text-slate-600">
-            {{ chatRoomData?.chats?.[0]?.message }}
+          <div v-if="chatRoomData?.last_message?.message_type === 'TEXT'" class="text-slate-600">
+            {{ chatRoomData?.last_message?.message }}
           </div>
           <div v-else class="flex gap-1 items-center text-slate-500">
             <Icon name="hugeicons:image-03" />
