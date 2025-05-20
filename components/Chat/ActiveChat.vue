@@ -89,7 +89,7 @@ async function fetchChatRoomDetailsForAll(chatRooms: ChatRoom[]) {
     console.log('Chat rooms with details:', listChatRoom);
   } catch (e) {
     console.error('Error fetching chat room details:', e);
-    toast.add({ message: 'Gagal mengambil data chat room details', type: 'error' });
+    toast.add({ message: 'Failed to fetch chat room details', type: 'error' });
   }
 }
 

@@ -87,7 +87,7 @@ async function fetchUnassignedChatRoomDetailsForAll(unassignedChatRooms: ChatRoo
     console.log('Chat rooms with details:', unassignedListChatRoom);
   } catch (e) {
     console.error('Error fetching chat room details:', e);
-    toast.add({ message: 'Gagal mengambil data chat room details', type: 'error' });
+    toast.add({ message: 'Failed to fetch chat room details', type: 'error' });
   }
 }
 

@@ -43,7 +43,7 @@ const historyActiveChatDetails = ref<ChatRoomDetails>()
 const historyActiveChatDetailsPagination = ref()
 
 const { data: historyChatRooms } = await useAsyncData('historyChatRooms', () =>
-  useApi<Response<ChatRoom[]>>('/new/admin/chat-rooms?is_active=false&per_page=10&page=1', {
+  useApi<Response<ChatRoom[]>>('/new/admin/chat-rooms/?is_active=false', {
     method: 'GET',
   }).then((res) => res.data.value?.data)
 )
@@ -78,7 +78,7 @@ async function fetchHistoryChatRoomDetailsForAll(historyChatRooms: ChatRoom[]) {
     console.log('Chat rooms with details:', historyListChatRoom);
   } catch (e) {
     console.error('Error fetching chat room details:', e);
-    toast.add({ message: 'Gagal mengambil data chat room details', type: 'error' });
+    toast.add({ message: 'Failed to fetch chat room details', type: 'error' });
   }
 }
 // watchEffect(() => {
