@@ -22,11 +22,11 @@
       </div>
       <div class="flex gap-2">
         <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat_room::add_participant"> 
-        <UITooltip tooltip-text="Add Participant" direction="bottom-right">
+        <!-- <UITooltip tooltip-text="Add Participant" direction="bottom-right">
           <Icon name="hugeicons:user-add-02"
             class="ml-auto font-bold p-2 rounded-lg text-2xl text-blue-500 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-blue-800"
             @click="handleAddingParticipant" />
-        </UITooltip>
+        </UITooltip> -->
        </DPermissionGuard> 
        <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat_room::finish">
         <UITooltip tooltip-text="Finish Chat" direction="bottom-right">
@@ -53,7 +53,7 @@
           <ChatBubble :chat="chat" :active-chat-details="activeChatDetails" />
         </template>
       </div>
-       <!-- <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat::store"> --> -->
+       <!-- <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat::store"> -->
        <!-- <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat::store"> --> 
       <div class="flex gap-2 items-center px-4">
         <Menu>
@@ -141,8 +141,8 @@
   </UIModals>
 
 
-    <UIConfirmModal v-model="showFinishConfirm" class="text-lg font-bold" title="Chat Acceptance Confirmation"
-      message="Will you accept this chat?" @confirm="handleFinishChat" />
+    <UIConfirmModal v-model="showFinishConfirm" class="text-lg font-bold" title="Chat Close Confirmation"
+      message="Will you close this chat?" @confirm="handleFinishChat" />
 </template>
 
   <script setup lang="ts">
