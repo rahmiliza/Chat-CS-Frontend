@@ -73,13 +73,14 @@ async function fetchChatRoomDetailsForAll(chatRooms: ChatRoom[]) {
           `/new/admin/chat-rooms/${chatRoom.id}/chat-participant`
         );
         const messagesResponse = await useApi<ResponseWithPagination>(
-          `/new/admin/chat-rooms/${chatRoom.id}/chats`
+          `/new/admin/chat-rooms/${chatRoom.id}/chats?page=1&per_page=10`
         );
 
         return {
           ...chatRoom,
           participant: participantsResponse.data.value?.data || [],
           chats: messagesResponse.data.value?.data || [],
+          last_message: messagesResponse.data.value?.data[0] || null,
         };
       })
     );
@@ -217,23 +218,61 @@ onMounted(() => {
     }
   })
 
-  socket.on('chat-room', (chatRoom: ChatRoom) => {
-    if (listChatRoom.value.findIndex((item) => item?.id === chatRoom?.id) < 0) {
+  socket.on('last-message-room', (lastMessage: Chat) => {
+    const lastMessageIndexRoom = listChatRoom.value?.findIndex((item) => item?.id === lastMessage?.chat_room_id)
+
+    if (lastMessageIndexRoom > -1 && listChatRoom.value[lastMessageIndexRoom]) {
+      listChatRoom.value[lastMessageIndexRoom].last_message = { ...lastMessage }
+
+      listChatRoom.value.sort((a, b) => {
+        return b.last_message.created_at - a.last_message.created_at
+      })
+    }
+  })
+
+  socket.on('chat-room', async (chatRoom: ChatRoom) => {
+    const index = listChatRoom.value.findIndex(item => item?.id === chatRoom?.id)
+
+    if (index < 0) {
       listChatRoom.value.push(chatRoom)
     } else {
-      listChatRoom.value[listChatRoom.value.findIndex((item) => item?.id === chatRoom?.id)] = { ...chatRoom }
+      listChatRoom.value[index] = { ...chatRoom }
     }
 
-    // Sorting listChatRoom based on last_message.created_at and status
-    listChatRoom.value.sort((a, b) => {
-      if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
-        return -1
-      } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
-        return 1
-      } else {
-        return b.last_message.created_at - a.last_message.created_at
+    const currentChatRoom = listChatRoom.value.find(item => item?.id === chatRoom?.id)
+
+    if (!currentChatRoom?.last_message || !currentChatRoom?.chats || currentChatRoom.chats.length === 0) {
+      try {
+        const { data, error } = await useApi<ResponseWithPagination>(`new/admin/chat-rooms/${chatRoom.id}/chats`, {
+          method: 'GET',
+        })
+
+        if (data.value?.data && !error.value) {
+          const updatedIndex = listChatRoom.value.findIndex(item => item?.id === chatRoom?.id)
+          if (updatedIndex > -1) {
+            listChatRoom.value[updatedIndex] = {
+              ...listChatRoom.value[updatedIndex],
+              chats: data.value.data,
+              last_message: data.value.data[0] || null,
+            }
+          }
+        } else {
+          console.error('Failed to fetch chat room details:', error.value)
+        }
+      } catch (e) {
+        console.error('Error fetching chat room:', e)
       }
+    }
+
+    listChatRoom.value.sort((a, b) => {
+      const aTime = a.last_message?.created_at ?? 0
+      const bTime = b.last_message?.created_at ?? 0
+      return bTime - aTime
     })
+
+    // listChatRoom.value.sort((a, b) => {
+    //   return b.last_message.created_at - a.last_message.created_at
+    // })
   })
 })
 
