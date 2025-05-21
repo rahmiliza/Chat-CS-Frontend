@@ -27,22 +27,22 @@
       "action-button":"Tindakan",
       "update-button":"Perbarui",
       "edit-button":"Sunting",
-  "modals":{
-    "create-role":"Buat Peran Baru",
-    "permission-role":"Nama permission",
-    "create-button": "Buat",
-    "cancel-button": "Batal" 
+    "modals":{
+      "create-role":"Buat Peran Baru",
+      "permission-role":"Nama permission",
+      "create-button": "Buat",
+      "cancel-button": "Batal" 
+    }
   },
-
-},
-"Participant":{
-  "add-participant":"Tambah Peserta",
-  "add-customer": "Tambah Pelanggan",
-  "customer-id": "ID Pelanggan",
-  "customer-name": "Nama Pelanggan",
-  "cancel-button": "Batal",
-  "add-button": "Tambah"
-},
-"Chat" :{
-  "no-chat" : "Tidak ada obrolan"
+    "Participant":{
+      "add-participant":"Tambah Peserta",
+      "add-customer": "Tambah Pelanggan",
+      "customer-id": "ID Pelanggan",
+      "customer-name": "Nama Pelanggan",
+      "cancel-button": "Batal",
+      "add-button": "Tambah"
+    },
+    "Chat" :{
+      "no-chat" : "Tidak ada obrolan"
+    }
 }
