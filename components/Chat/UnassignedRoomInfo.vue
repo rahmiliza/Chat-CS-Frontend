@@ -11,13 +11,13 @@
           {{
             chatRoomData?.participant
               .filter((p) => p.display_name !== user?.name)
-              .map((p) => p.display_name != '' ? p.display_name : 'Tidak Ada Nama')
+              .map((p) => p.display_name != '' ? p.display_name : 'Unknown User')
               .join(', ')
           }}
         </div>
       </template>
       <div v-else class="w-full truncate font-bold text-gray-600 flex items-center gap-2">
-        {{ chatRoomData?.participant?.[getOtherParticipantIndex()]?.display_name != '' ? chatRoomData?.participant?.[getOtherParticipantIndex()]?.display_name : 'Tidak Ada Nama' }}
+        {{ chatRoomData?.participant?.[getOtherParticipantIndex()]?.display_name != '' ? chatRoomData?.participant?.[getOtherParticipantIndex()]?.display_name : 'Unknown User' }}
       </div>
       <template v-if="chatRoomData?.last_message">
         <div class="w-full truncate text-sm">
