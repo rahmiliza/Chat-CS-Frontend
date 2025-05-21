@@ -16,5 +16,33 @@
     "title": "Chats",
     "add_chat_room": "Tambahkan Ruang Obrolan",
     "noChats": "Tidak ada obrolan"
-  }
+  },
+  "Roles":{
+      "header-title":"Kelola Peran",
+      "add-role":"Tambah Peran",
+      "create-role":"Buat Peran",
+      "role-name":"Nama Peran",
+      "create-button":"Buat",
+      "cancel-button":"Batal",
+      "action-button":"Tindakan",
+      "update-button":"Perbarui",
+      "edit-button":"Sunting",
+  "modals":{
+    "create-role":"Buat Peran Baru",
+    "permission-role":"Nama permission",
+    "create-button": "Buat",
+    "cancel-button": "Batal" 
+  },
+
+},
+"Participant":{
+  "add-participant":"Tambah Peserta",
+  "add-customer": "Tambah Pelanggan",
+  "customer-id": "ID Pelanggan",
+  "customer-name": "Nama Pelanggan",
+  "cancel-button": "Batal",
+  "add-button": "Tambah"
+},
+"Chat" :{
+  "no-chat" : "Tidak ada obrolan"
 }

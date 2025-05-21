@@ -21,85 +21,34 @@
     "banner": "橫幅", 
  "category": "類別"
   },
-  "button":{
-    "close": "關閉",
-    "save": "節省"
+  "Roles":{
+    "header-title":"管理角色",
+    "add-role":"新增角色",
+    "create-role":"建立角色",
+    "role-name":"角色名稱",
+    "create-button":"創建",
+    "cancel-button":"取消",
+    "action-button":"運算",
+    "update-button":"更新",
+    "edit-button":"編輯",
+    "modals": {
+      "create-role":"建立新角色",
+      "permission-role":"權限名稱？",
+      "create-button": "建立",
+      "cancel-button": "取消"
+   },
   },
-  "Phone":{
-    "title":"電話清單",
-    "list":{
-      "name":"姓名",
-      "brand": "品牌",
-      "category":"類別",
-      "action":"動作",
-      "price":"價格",
-      "specification": {
-        "title": "規格",
-        "product_code":"產品代碼",
-        "ram": "公羊",
-        "storage":"儲存",
-        "os":"作業系統",
-        "battery": "電池",
-        "color": "顏色",
-        "rear_camera":"後置相機",
-        "front_camera":"前置鏡頭",
-        "screen_size":"螢幕尺寸"
-      }
-    },
-    "add":{
-    "title": "新增手機",
-    "name": "姓名",
-    "brand":"品牌",
-    "category":"類別",
-    "price":"價格",
-    "product_code":"產品代碼",
-    "specification": "規格",
-    "ram":"Ram",
-    "color": "顏色",
-    "storage":"儲存",
-    "os":"作業系統",
-    "rear_camera":"後置相機",
-    "screen_size":"螢幕尺寸",
-    "front_camera":"前置鏡頭",
-    "battery": "電池",
-    "image":"圖",
-    "change_image":"更改圖片",
-    "close": "關閉",
-    "save": "節省"
-    }
+  "Participant":{
+    "add-participant":"新增參與者",
+    "add-customer": "新增客戶",
+    "customer-id": "客戶 ID",
+    "customer-name": "客戶姓名",
+    "cancel-button": "取消",
+    "add-button": "新增"
   },
-   "brand": {
-    "title":"品牌",
-    "header_title":"品牌產品列表",
-    "add" : {
-    "title":"添加品牌",
-    "name":"姓名",
-    "description": "描述"
-    }
+  "Chat":{
+    "no-chat" : "沒有聊天"
   },
-  "category": {
-    "title":"分類",
-    "header_title":"類別產品列表",
-    "add":{
-      "title":"新增類別",
-      "name":"姓名",
-      "description": "描述"
-    }
-  },
-  "price_history":{
-  "title":"歷史價格"
-  },
-  "installment":{
-    "title":"分期付款",
-    "detail":{
-      "title":"新增類別",
-      "name":"姓名",
-      "description": "描述",
-      "month": "月",
-      "price":"價格"
-    }
-  },
-  "banner": {
-      "title" :"banner"
-  }
+
+
 }

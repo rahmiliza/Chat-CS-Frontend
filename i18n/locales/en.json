@@ -16,5 +16,33 @@
     "title": "Chats",
     "add_chat_room": "Add Chat Room",
     "noChats": "No chats"
+  },
+  "Roles":{
+    "header-title":"Manage Roles",
+    "add-role":"Add Role",
+    "create-role":"Create Role",
+    "role-name":"Role Name",
+    "create-button":"Create",
+    "cancel-button":"Cancel",
+    "action-button":"Actions",
+    "update-button":"Update",
+    "edit-button":"Edit",
+    "modals":{
+      "create-role":"Create New Role",
+      "permission-role":"Permission Name?",
+      "create-button": "Create",
+      "cancel-button": "Cancel" 
+   },
+  },
+  "Participant":{
+    "add-participant":"Add Participant",
+    "add-customer": "Add Customer",
+    "customer-id": "Customer ID",
+    "customer-name": "Customer Name",
+    "cancel-button": "Cancel",
+    "add-button": "Add"
+  },
+  "Chat":{
+    "no-chat" : "No chat"
   }
 }

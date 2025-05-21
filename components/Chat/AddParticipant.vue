@@ -3,7 +3,7 @@
       <!-- Add Participant Button -->
       <div v-if="activeChatData" class="absolute top-4 right-4 z-20">
         <button @click="showAddParticipantModal = true" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-          Add Participant
+        {{ $t ('Participant.add-participant') }}
         </button>
       </div>
   
@@ -14,7 +14,7 @@
       >
         <div class="bg-white rounded-xl p-6 w-full max-w-md">
           <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold">Add Customer</h2>
+            <h2 class="text-lg font-semibold">{{ $t ('Participant.add-customer')}}</h2>
             <button @click="showAddParticipantModal = false" class="text-gray-500 hover:text-black text-2xl leading-none">
               &times;
             </button>
@@ -22,19 +22,19 @@
   
           <form @submit.prevent="handleAddParticipant">
             <div class="mb-4">
-              <label class="block text-sm font-medium mb-1">Id Customers</label>
+              <label class="block text-sm font-medium mb-1">{{ $t ('Participant.customer-id')}}</label>
               <input v-model="participantInput" class="w-full border px-3 py-2 rounded" required />
             </div>
             <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Name </label>
+                <label class="block text-sm font-medium mb-1">{{ $t ('Participant.customer-name')}} </label>
                 <input v-model="participantInput" class="w-full border px-3 py-2 rounded" required />
             </div>
             <div class="flex justify-end">
               <button type="button" @click="showAddParticipantModal = false" class="mr-2 px-4 py-2 border rounded">
-                Cancel
+                {{ $t ('Participant.cancel-button')}}
               </button>
               <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
-                Add
+                {{ $t ('Participant.add-button')}}
               </button>
             </div>
           </form>

@@ -21,7 +21,7 @@
         </template>
       </template>
       <template v-else>
-        <div class="flex justify-center items-center h-full text-gray-400">No Chat</div>
+        <div class="flex justify-center items-center h-full text-gray-400">{{ $t ('Chat.no-chat')}}</div>
       </template>
     </div>
   </div>

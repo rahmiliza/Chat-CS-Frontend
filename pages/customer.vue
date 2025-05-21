@@ -66,7 +66,7 @@ const fetchExistingChatRoom = async () => {
       activeChat.value = null
     }
   } catch (e) {
-    toast.add({ message: 'Gagal mengambil chat room.', type: 'error' })
+    toast.add({ message: 'Failed Get Chat Room.', type: 'error' })
   }
 }
 
@@ -102,7 +102,7 @@ const startChat = async () => {
     await nextTick();
     chatting.value?.startChatMessage(message.value);
   } else {
-    toast.add({ message: 'Gagal memulai chat.', type: 'error' })
+    toast.add({ message: 'Failed start chat message.', type: 'error' })
   }
 }
 
@@ -130,7 +130,7 @@ async function fetchActiveChatDetails(nextCursor: string = '') {
       activeChatDetails.value = { chat_room: activeChat.value, chats: [] }
     }
   } catch (e) {
-    toast.add({ message: 'Gagal mengambil detail chat.', type: 'error' })
+    toast.add({ message: 'Failed get chat room details.', type: 'error' })
   }
 }
 

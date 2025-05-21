@@ -5,29 +5,29 @@
           <!-- Main Content -->
           <main class="flex-1 p-8 bg-gray-50 ">
               <div class="mb-6 flex justify-between items-center">
-                  <h1 class="text-3xl font-bold text-gray-600">Manage Roles</h1>
+                  <h1 class="text-3xl font-bold text-gray-600">{{ $t ('Roles.header-title')}}</h1>
                   <button @click="openModal" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-                      Add Roles
+                      {{ $t ('Roles.add-role')}}
                   </button>
               </div>
   
               <!-- New Ticket Modal -->
               <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
                   <div class="bg-white p-6 rounded-lg shadow-md max-w-lg w-full">
-                      <h3 class="text-xl font-semibold text-gray-700">Create New Roles</h3>
+                      <h3 class="text-xl font-semibold text-gray-700"></h3>{{ $t ('Roles.create-new-role')}}
                       <form @submit.prevent="createTicket" class="space-y-4 mt-4">
                           <div>
-                              <label for="customerName" class="block text-gray-700">Role Name</label>
+                              <label for="customerName" class="block text-gray-700">{{ $t ('Roles.role-name')}}</label>
                               <input v-model="newTicket.customerName" id="customerName" type="text" class="w-full p-2 border border-gray-300 rounded-md text-gray-700"/>
                           </div>
                         
                         
                           <div class="flex justify-end space-x-2">
                               <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-                                  Create
+                                  {{ $t ('Roles.create')}}
                               </button>
                               <button @click="closeModal" class="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500">
-                                  Cancel
+                              {{ $t ('Roles.cancel')}}
                               </button>
                           </div>
                       </form>
@@ -40,7 +40,7 @@
                   <table class="min-w-full mt-4">
                       <thead>
                           <tr class="text-left border-b text-lg text-gray-700">
-                              <th class="py-3 px-4">Role Name</th>
+                              <th class="py-3 px-4">{{ $t ('Roles.role-name')}}</th>
                               <!-- <th class="py-3 px-4">Supervisor</th> -->
                               <th class="py-3 px-4">Actions</th>
                           </tr>
@@ -52,27 +52,27 @@
                               <td class="py-3 px-6 flex space-x-6">
                          
                                   <button @click="openModal" 
-                                  class="text-blue-500 font-semibold hover:underline shadow-xs ">Update Permission</button>
-                                  <button class="font-semibold text-red-400 hover:underline shadow-xs">Edit</button>
+                                  class="text-blue-500 font-semibold hover:underline shadow-xs ">{{ $t ('Roles.action-button')}}</button>
+                                  <button class="font-semibold text-red-400 hover:underline shadow-xs">{{ $t ('Roles.edit-button')}}</button>
                               </td>
                           </tr>
 
                           <div v-if="showModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 z-50">
                           <div class="bg-white p-6 rounded-lg shadow-md max-w-lg w-full">
-                              <h3 class="text-xl font-semibold text-gray-700">Create New Roles</h3>
+                              <h3 class="text-xl font-semibold text-gray-700">{{ $t ('Roles.modals.create-role')}}</h3>
                               <form @submit.prevent="createTicket" class="space-y-4 mt-4">
                                   <div>
-                                      <label for="customerName" class="block text-gray-700">Permission Name</label>
+                                      <label for="customerName" class="block text-gray-700">{{ $t ('Roles,modals.permission-role')}}</label>
                                       <input v-model="newTicket.customerName" id="customerName" type="text" class="w-full p-2 border border-gray-300 rounded-md text-gray-700"/>
                                   </div>
-                                
+                        
                                 
                                   <div class="flex justify-end space-x-2">
                                       <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">
-                                          Create
+                                          {{ $t ('Roles.modals.create-button')}}
                                       </button>
                                       <button @click="closeModal" class="bg-gray-400 text-white px-4 py-2 rounded-md hover:bg-gray-500">
-                                          Cancel
+                                          {{ $t ('Roles.modals.cancel-button')}}
                                       </button>
                                   </div>
                               </form>
