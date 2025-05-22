@@ -50,48 +50,46 @@ const { data: historyChatRooms } = await useAsyncData('historyChatRooms', () =>
 
 watchEffect(async () => {
   if (Array.isArray(historyChatRooms.value)) {
-    await fetchHistoryChatRoomDetailsForAll(historyChatRooms.value)
-    // historyListChatRoom.value = [...historyChatRooms.value].sort(sortChatRoom)
+    // await fetchHistoryChatRoomDetailsForAll(historyChatRooms.value)
+    historyListChatRoom.value = [...historyChatRooms.value].sort(sortChatRoom)
   }
 })
 
-async function fetchHistoryChatRoomDetailsForAll(historyChatRooms: ChatRoom[]) {
-  try {
-    const historyChatRoomsWithDetails = await Promise.all(
-      historyChatRooms.map(async (chatRoom) => {
-        const participantsResponse = await useApi<Response<Participant[]>>(
-          `/new/admin/chat-rooms/${chatRoom.id}/chat-participant`
-        );
-        const messagesResponse = await useApi<ResponseWithPagination>(
-          `/new/admin/chat-rooms/${chatRoom.id}/chats`
-        );
+// async function fetchHistoryChatRoomDetailsForAll(historyChatRooms: ChatRoom[]) {
+//   try {
+//     const historyChatRoomsWithDetails = await Promise.all(
+//       historyChatRooms.map(async (chatRoom) => {
+//         const participantsResponse = await useApi<Response<Participant[]>>(
+//           `/new/admin/chat-rooms/${chatRoom.id}/chat-participant`
+//         );
+//         const messagesResponse = await useApi<ResponseWithPagination>(
+//           `/new/admin/chat-rooms/${chatRoom.id}/chats`
+//         );
 
-        return {
-          ...chatRoom,
-          participant: participantsResponse.data.value?.data || [],
-          chats: messagesResponse.data.value?.data || [],
-        };
-      })
-    );
+//         return {
+//           ...chatRoom,
+//           participant: participantsResponse.data.value?.data || [],
+//           chats: messagesResponse.data.value?.data || [],
+//         };
+//       })
+//     );
 
-    historyListChatRoom.value = historyChatRoomsWithDetails;
-    console.log('Chat rooms with details:', historyListChatRoom);
-  } catch (e) {
-    console.error('Error fetching chat room details:', e);
-    toast.add({ message: 'Failed to fetch chat room details', type: 'error' });
-  }
-}
+//     historyListChatRoom.value = historyChatRoomsWithDetails;
+//     console.log('Chat rooms with details:', historyListChatRoom);
+//   } catch (e) {
+//     console.error('Error fetching chat room details:', e);
+//     toast.add({ message: 'Failed to fetch chat room details', type: 'error' });
+//   }
+// }
 // watchEffect(() => {
 //   if (Array.isArray(historyChatRooms.value)) {
 //     historyListChatRoom.value = [...historyChatRooms.value].sort(sortChatRoom)
 //   }
 // })
 
-// function sortChatRoom(a: ChatRoom, b: ChatRoom) {
-//   if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') return -1
-//   if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') return 1
-//   return b.last_message.created_at - a.last_message.created_at
-// }
+function sortChatRoom(a: ChatRoom, b: ChatRoom) {
+  return b.last_message.created_at - a.last_message.created_at
+}
 
 function toggleGlobalLoading(loadingValue: boolean) {
   globalLoading.value = loadingValue
