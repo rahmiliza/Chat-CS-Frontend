@@ -18,11 +18,11 @@
       </div>
     </template>
     <template v-if="chat?.message_type === 'IMAGE'">
-      <img :src="chat?.message_attachment" alt="image"
+      <img :src="chat?.image_url" alt="image"
         class="w-[260px] h-[260px] object-cover rounded-lg hover:cursor-pointer" @click="
           () => {
-            selectedAttachmentUrl = chat?.message_attachment
-            showModalAttachment = true
+            selectedUnassignedAttachmentUrl = chat?.image_url
+            showModalUnassignedAttachment = true
           }
         " />
     </template>
@@ -32,15 +32,15 @@
   </div>
 
   <!--* Show Attachment Modal -->
-  <modals v-model="showModalAttachment" modal-title="Attachment" :footer="false" :on-close-modal="() => {
-      selectedAttachmentUrl = ''
-      showModalAttachment = false
+  <modals v-model="showModalUnassignedAttachment" modal-title="Attachment" :footer="false" :on-close-modal="() => {
+      selectedUnassignedAttachmentUrl = ''
+      showModalUnassignedAttachment = false
     }
     ">
     <template #modal-content>
       <div class="w-[800px]">
         <div class="w-full h-[600px] bg-contain flex bg-center bg-no-repeat justify-center items-center" :style="{
-          'background-image': `url('${selectedAttachmentUrl}')`,
+          'background-image': `url('${selectedUnassignedAttachmentUrl}')`,
         }"></div>
       </div>
     </template>
@@ -69,8 +69,8 @@ function getRoleIcon(userId: string) {
   }
 }
 
-const showModalAttachment = ref(false)
-const selectedAttachmentUrl = ref('')
+const showModalUnassignedAttachment = ref(false)
+const selectedUnassignedAttachmentUrl = ref('')
 
 console.log(props.activeChatDetails);
 </script>

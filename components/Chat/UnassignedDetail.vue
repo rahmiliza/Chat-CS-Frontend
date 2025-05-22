@@ -120,11 +120,6 @@ import type {
   ChatRoom,
   ChatRoomDetails,
   Chat,
-  UpsertResponse,
-  CursorPaginationResponse,
-  TemporaryFileUpload,
-  User,
-  Option,
 } from '~/models/chat'
 
 interface Props {
