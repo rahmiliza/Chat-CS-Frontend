@@ -48,6 +48,16 @@ const activeChatDetails = ref<ChatRoomDetails>()
 const activeChatDetailsPagination = ref()
 const chattingContainerLoading = ref(false)
 
+watch(activeChat, (chatRoom) => {
+  if (!chatRoom) return
+
+  socket.emit('join', user?.id)
+  socket.emit('join-room', chatRoom.id)
+  fetchActiveChatDetails()
+  // ...
+}, { immediate: true })
+
+
 const socket = io(config.public.socketUrl, {
   auth: { userId: user?.id },
 })
@@ -55,7 +65,7 @@ const socket = io(config.public.socketUrl, {
 const fetchExistingChatRoom = async () => {
   try {
     const { data } = await useAsyncData('chatRooms', () =>
-      useApi<Response<ChatRoom[]>>(`/chat-rooms/`, {
+      useApi<Response<ChatRoom[]>>(`/chat-rooms/?is_active=true`, {
         method: 'GET',
       }).then(res => res.data.value?.data ?? [])
     )
