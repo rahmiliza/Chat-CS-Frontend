@@ -2,14 +2,14 @@
   <div class="relative h-full w-[calc(100%-336px)]">
     <template v-if="chattingContainerLoading">
       <!-- <shell-indicator-loading /> -->
-       
-       
+
+
     </template>
     <div>
       <h1 class="text-xl overflow font-semibold text-slate-700  my-3"> Now, You have chat room with Admin Xinchuan </h1>
     </div>
     <div class="h-14 bg-blue-300 w-full flex justify-between items-center border-b border-black px-2 ">
-    
+
       <div class="w-full text-lg font-bold truncate ml-2 dark:text-black">
         <template v-if="activeChat?.participant && activeChat.participant.length > 2">
           {{
@@ -19,11 +19,8 @@
               .join(', ')
           }}
         </template>
-        <template v-else class= "text-black">
-          {{ activeChat?.participant[getOtherParticipantIndex()]?.display_name  + '"Admin"'
-          
-          
-          }}
+        <template v-else class="text-black">
+          {{ activeChat?.participant[getOtherParticipantIndex()]?.display_name + '"Admin"' }}
         </template>
       </div>
 
@@ -52,72 +49,64 @@
       </shell-tooltip> -->
     </div>
     <div class="h-[calc(100%-56px)] w-full flex flex-col">
-      <div ref="chatList" v-scroll="onScroll" class="h-full bg-blue-50 w-full overflow-y-auto flex flex-col-reverse px-4 mb-2 py-4">
+      <div ref="chatList" v-scroll="onScroll"
+        class="h-full bg-blue-50 w-full overflow-y-auto flex flex-col-reverse px-4 mb-2 py-4">
         <template v-for="chat in activeChatDetails?.chats" :key="chat?.id">
           <ChatBubble :chat="chat" :active-chat-details="activeChatDetails" />
         </template>
       </div>
-      <decorators-permission-guard v-if="!activeChat?.closed_at" permission="chat::store">
-        <div class="flex items-center">
-          <Menu>
-            <div>
-              <MenuButton class=" inline-flex w-full relative">
-                <fa-icon icon="paperclip"
-                  class="font-bold rounded-sm text-xl text-red-600 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-red-300/50" />
-              </MenuButton>
-            </div>
+      <!-- <decorators-permission-guard v-if="!activeChat?.closed_at" permission="chat::store"> -->
+      <div class="flex gap-2 items-center px-4">
+        <Menu>
+          <div>
+            <MenuButton class="inline-flex w-full relative">
+              <Icon name="hugeicons:attachment"
+                class="font-bold p-2 rounded-lg text-xl text-blue-600 hover:cursor-pointer hover:brightness-110 active:brightness-90 hover:bg-blue-300/50" />
+            </MenuButton>
+          </div>
 
-            <transition enter-active-class="transition duration-100 ease-out"
-              enter-from-class="transform scale-95 opacity-0" enter-to-class="transform scale-100 opacity-100"
-              leave-active-class="transition duration-75 ease-in" leave-from-class="transform scale-100 opacity-100"
-              leave-to-class="transform scale-95 opacity-0">
-              <MenuItems
-                class="absolute z-50 left-[12px] bottom-[48px] mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
-                <div class="px-1 py-1">
-                  <MenuItem v-slot="{ active }">
-                  <button :class="[
-                    active ? 'bg-red-500 text-white' : 'text-black',
-                    'group flex w-full items-center rounded-md px-2 py-2 text-sm',
-                  ]" @click="triggerFileInputClick">
-                    <fa-icon icon="image" class="mr-2" :class="active ? 'bg-red-500 text-white' : 'text-red-600'" />
-                    Image
-                  </button>
-                  </MenuItem>
-                </div>
-              </MenuItems>
-            </transition>
-          </Menu>
-          <input v-model="message" placeholder="Enter Message"
-            class="w-full p-2 dark:bg-slate-900 bg-white rounded-lg border border-slate-400 resize-none overflow-hidden max-h-20 text-sm outline-none focus:border-red-500"
-            rows="1" @keydown.enter="() => handleRequestSendMessage('TEXT')" />
-        </div>
-      </decorators-permission-guard>
+          <transition enter-active-class="transition duration-100 ease-out"
+            enter-from-class="transform scale-95 opacity-0" enter-to-class="transform scale-100 opacity-100"
+            leave-active-class="transition duration-75 ease-in" leave-from-class="transform scale-100 opacity-100"
+            leave-to-class="transform scale-95 opacity-0">
+            <MenuItems
+              class="absolute z-50 left-[12px] bottom-[48px] mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black/5 focus:outline-none">
+              <div class="px-1 py-1">
+                <MenuItem v-slot="{ active }">
+                <button :class="[
+                  active ? 'bg-blue-500 text-white' : 'text-black',
+                  'group flex w-full items-center rounded-md px-2 py-2 text-sm',
+                ]" @click="triggerFileInputClick">
+                  <Icon name="hugeicons:image-03" class="mr-2"
+                    :class="active ? 'bg-blue-500 text-white' : 'text-blue-600'" />
+                  Image
+                </button>
+                </MenuItem>
+              </div>
+            </MenuItems>
+          </transition>
+        </Menu>
+        <input v-model="message" placeholder="Enter Message"
+          class="w-full p-2 dark:bg-white bg-slate-100 rounded-lg text-black border border-slate-400 resize-none overflow-hidden max-h-20 text-sm outline-none focus:border-blue-500"
+          rows="1" @keydown.enter="() => handleRequestSendMessage('TEXT')" />
+      </div>
+      <!-- </decorators-permission-guard> -->
     </div>
   </div>
-  <div v-if="uploadedFiles.length > 0"
+  <div v-if="uploadedFiles !== null"
     class="absolute flex items-center justify-center z-50 top-0 left-0 w-screen h-screen bg-slate-500/50 px-20">
     <div class="relative flex flex-col w-fit h-fit bg-white rounded-lg justify-between shadow-xl">
-      <div v-if="uploadedFiles[0].loading" class="w-full h-full flex justify-center items-center">
-        <!-- <shell-indicator-loading /> -->
-      </div>
       <div class="mt-4 pr-4 flex items-center justify-end">
-     s
-
         <Icon name="hugeicons:cancel-01" class="text-2xl hover:cursor-pointer hover:text-blue-500 active:text-blue-700"
-          @click="
-            () => {
-              uploadedFiles = []
-            }
-          " />
+          @click="() => { uploadedFiles = null }" />
       </div>
       <div
         class="mt-4 bg-slate-200 w-[500px] min-h-[400px] bg-contain bg-no-repeat flex overflow-hidden bg-center justify-center items-center"
-        :style="{
-          'background-image': `url('${uploadedFiles[0]?.url}')`,
-        }"></div>
+        :style="{ 'background-image': `url('${uploadedFiles?.url}')` }">
+      </div>
       <div class="mt-4 pb-4 pr-4 flex items-center justify-end">
         <button
-          class="text-white bg-red-700 hover:bg-red-800 focus:ring-2 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 w-28"
+          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-2 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 w-28"
           @click="() => handleRequestSendMessage('IMAGE')">
           Send
         </button>
@@ -168,6 +157,11 @@ interface Props {
   chattingContainerLoading?: boolean
 }
 
+interface FileUpload {
+  url?: string
+  file?: File
+}
+
 const props = withDefaults(defineProps<Props>(), {})
 
 const emits = defineEmits([
@@ -203,7 +197,7 @@ const chatList = ref<HTMLElement | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
 const message = ref()
 
-const uploadedFiles = ref<TemporaryFileUpload[]>([])
+const uploadedFiles = ref<FileUpload | null>(null)
 
 const openModalAddNewParticipant = ref(false)
 
@@ -231,36 +225,14 @@ function triggerFileInputClick() {
 }
 
 async function handleFileInput(event: Event) {
-  const tempId = Math.random().toString(36).substr(2)
   const target = event.target as HTMLInputElement
 
   if (target.files && target.files[0]) {
-    uploadedFiles.value = []
-    uploadedFiles.value = [
-      {
-        id: tempId,
-        type: 'x-temporary',
-        loading: true,
-      },
-    ]
-
-    const payload = new FormData()
-
-    payload.append('file', target.files[0])
-
-    try {
-      const { data } = await useApi<UpsertResponse<TemporaryFileUpload>>('/storage/temporary', {
-        method: 'POST',
-        body: payload,
-      })
-
-      uploadedFiles.value[0].url = data.value?.data?.url
-      uploadedFiles.value[0].id = data.value?.data?.id
-    } catch (error) {
-      uploadedFiles.value[0].error = true
-    } finally {
-      uploadedFiles.value[0].loading = false
-    }
+    const file = target.files[0]
+    uploadedFiles.value = {
+      file: file,
+      url: URL.createObjectURL(file),
+    };
   }
 
   target.value = ''
@@ -350,11 +322,21 @@ async function handleOkAddNewParticipant() {
 
 
 async function handleRequestSendMessage(message_type: 'TEXT' | 'IMAGE' = 'TEXT') {
-  let chatMessage = message.value
+  let chatMessage;
 
   if (message_type === 'IMAGE') {
-    chatMessage = uploadedFiles.value[0]?.id
-    uploadedFiles.value = []
+    chatMessage = new FormData();
+    chatMessage.append('image', uploadedFiles.value?.file);
+    chatMessage.append('message', message.value);
+    chatMessage.append('message_type', message_type);
+    chatMessage.append('chat_room_id', props?.activeChatData?.id ?? '');
+    uploadedFiles.value = null;
+  } else {
+    chatMessage = {
+      message: message.value ?? '',
+      chat_room_id: props?.activeChatData?.id ?? '',
+      message_type: message_type ?? 'TEXT',
+    };
   }
 
   emitLoading(true)
@@ -364,11 +346,7 @@ async function handleRequestSendMessage(message_type: 'TEXT' | 'IMAGE' = 'TEXT')
 
     const { data, error } = await useApi<Response<Chat>>(`/chat-rooms/${props?.activeChat?.id}/chat`, {
       method: 'POST',
-      body: {
-        message: chatMessage ?? '',
-        chat_room_id: props?.activeChat?.id ?? '',
-        message_type: message_type ?? 'TEXT',
-      },
+      body: chatMessage,
     })
 
     if (data.value?.ok) {
