@@ -58,38 +58,38 @@ const { data: unassignedChatRooms, status: unassignedChatRoomsStatus } = await u
 
 watchEffect(async () => {
   if (Array.isArray(unassignedChatRooms.value)) {
-    await fetchUnassignedChatRoomDetailsForAll(unassignedChatRooms.value)
-    // unassignedListChatRoom.value = [...unassignedChatRooms.value].sort(sortChatRoom)
+    // await fetchUnassignedChatRoomDetailsForAll(unassignedChatRooms.value)
+    unassignedListChatRoom.value = [...unassignedChatRooms.value].sort(sortChatRoom)
   }
 })
 
-async function fetchUnassignedChatRoomDetailsForAll(unassignedChatRooms: ChatRoom[]) {
-  try {
-    const unassignedChatRoomsWithDetails = await Promise.all(
-      unassignedChatRooms.map(async (chatRoom) => {
-        const participantsResponse = await useApi<Response<Participant[]>>(
-          `/new/admin/chat-rooms/${chatRoom.id}/chat-participant`
-        );
-        const messagesResponse = await useApi<ResponseWithPagination>(
-          `/new/admin/chat-rooms/${chatRoom.id}/chats`
-        );
+// async function fetchUnassignedChatRoomDetailsForAll(unassignedChatRooms: ChatRoom[]) {
+//   try {
+//     const unassignedChatRoomsWithDetails = await Promise.all(
+//       unassignedChatRooms.map(async (chatRoom) => {
+//         const participantsResponse = await useApi<Response<Participant[]>>(
+//           `/new/admin/chat-rooms/${chatRoom.id}/chat-participant`
+//         );
+//         const messagesResponse = await useApi<ResponseWithPagination>(
+//           `/new/admin/chat-rooms/${chatRoom.id}/chats`
+//         );
 
-        return {
-          ...chatRoom,
-          participant: participantsResponse.data.value?.data || [],
-          chats: messagesResponse.data.value?.data || [],
-          last_message: messagesResponse.data.value?.data[0] || null,
-        };
-      })
-    );
+//         return {
+//           ...chatRoom,
+//           participant: participantsResponse.data.value?.data || [],
+//           chats: messagesResponse.data.value?.data || [],
+//           last_message: messagesResponse.data.value?.data[0] || null,
+//         };
+//       })
+//     );
 
-    unassignedListChatRoom.value = unassignedChatRoomsWithDetails;
-    console.log('Chat rooms with details:', unassignedListChatRoom);
-  } catch (e) {
-    console.error('Error fetching chat room details:', e);
-    toast.add({ message: 'Failed to fetch chat room details', type: 'error' });
-  }
-}
+//     unassignedListChatRoom.value = unassignedChatRoomsWithDetails;
+//     console.log('Chat rooms with details:', unassignedListChatRoom);
+//   } catch (e) {
+//     console.error('Error fetching chat room details:', e);
+//     toast.add({ message: 'Failed to fetch chat room details', type: 'error' });
+//   }
+// }
 
 function sortChatRoom(a: ChatRoom, b: ChatRoom) {
   //   if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') return -1
@@ -193,7 +193,7 @@ watch(activeUnassignedChatData, (_) => {
         return b.last_message.created_at - a.last_message.created_at
       })
     }
-    
+
     console.log('unassignedListChatRooms', unassignedListChatRoom)
   })
 })
@@ -225,7 +225,7 @@ onMounted(() => {
         return b.last_message.created_at - a.last_message.created_at
       })
     }
-    
+
     console.log('last-message-room', unassignedListChatRoom)
   })
 
