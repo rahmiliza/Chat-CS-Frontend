@@ -132,11 +132,11 @@ async function handleAddAdminChatIndex() {
         data.value?.data?.assigned_chat_room?.participant[otherParticipantIndex]?.user_id ?? ''
       )
     } else {
-      const errMsg = error.value?.data?.message ?? 'An Error was Accrued, Please try again6'
+      const errMsg = error.value?.data?.message ?? 'An Error was Accrued, Please try again'
       toast.add({ message: errMsg, type: "error" })
     }
   } catch (e: any) {
-    const errMsg = e?.value?.data?.message || 'An Error was Accrued, Please try again7'
+    const errMsg = e?.value?.data?.message || 'An Error was Accrued, Please try againn'
     toast.add({ message: errMsg, type: "error" })
   } finally {
     emits('toggleGlobalLoading', false)
