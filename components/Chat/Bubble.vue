@@ -18,10 +18,10 @@
       </div>
     </template>
     <template v-if="chat?.message_type === 'IMAGE'">
-      <img :src="chat?.message_attachment" alt="image"
+      <img :src="chat?.image_url" alt="image"
         class="w-[260px] h-[260px] object-cover rounded-lg hover:cursor-pointer" @click="
           () => {
-            selectedAttachmentUrl = chat?.message_attachment
+            selectedAttachmentUrl = chat?.image_url
             showModalAttachment = true
           }
         " />
@@ -71,8 +71,6 @@ function getRoleIcon(userId: string) {
 
 const showModalAttachment = ref(false)
 const selectedAttachmentUrl = ref('')
-
-console.log(props.activeChatDetails);
 </script>
 
 <style scoped>
