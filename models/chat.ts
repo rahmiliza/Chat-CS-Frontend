@@ -6,6 +6,7 @@ export interface Chat {
     sent_by: string
     sent_by_code: string
     message_type: string
+    image_url: string
     message_attachment: string
     message: string
   }
