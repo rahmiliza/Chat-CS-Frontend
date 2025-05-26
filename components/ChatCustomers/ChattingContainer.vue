@@ -1,12 +1,12 @@
 <template>
-  <div class="relative h-full w-[calc(100%-336px)]">
+  <div class="relative h-full w-[calc(100%)]">
     <template v-if="chattingContainerLoading">
       <!-- <shell-indicator-loading /> -->
 
 
     </template>
     <div>
-      <h1 class="text-xl overflow font-semibold text-slate-700  my-3"> Now, You have chat room with Admin Xinchuan </h1>
+      <h1 class="text-xl overflow  lg:text-lg dark:text-slate-500 text-slate-700  my-3"> Now, You have a chat room with Admin Xinchuan </h1>
     </div>
     <div class="h-14 bg-blue-300 w-full flex justify-between items-center border-b border-black px-2 ">
 
