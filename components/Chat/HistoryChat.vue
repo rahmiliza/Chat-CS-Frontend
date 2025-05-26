@@ -88,7 +88,7 @@ watchEffect(async () => {
 // })
 
 function sortChatRoom(a: ChatRoom, b: ChatRoom) {
-  return b.last_message.created_at - a.last_message.created_at
+  return b.updated_at - a.updated_at
 }
 
 function toggleGlobalLoading(loadingValue: boolean) {
