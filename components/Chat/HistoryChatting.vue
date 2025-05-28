@@ -20,8 +20,6 @@
         </template>
       </div>
       <div class="flex gap-2">
-        <!-- <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat_room::add_participant"> -->
-
       </div>
     </div>
     <div class="w-full flex flex-col flex-1 h-[calc(100%-87px)]">
@@ -31,9 +29,6 @@
           <ChatBubble :chat="chat" :active-chat-details="activeChatDetails" />
         </template>
       </div>
-      <!-- <DPermissionGuard v-if="!activeChatData?.closed_at" permission="chat::store"> -->
-
-      <!-- </DPermissionGuard> -->
     </div>
   </div>
 
@@ -52,12 +47,8 @@ import type {
   ChatRoom,
   ChatRoomDetails,
   Chat,
-  // UpsertResponse,
-  // CursorPaginationResponse,
-  // TemporaryFileUpload,
-  // User,
-  // Option,
 } from '~/models/chat'
+import type { PaginationResponse } from '~/models/response'
 
 interface Props {
   activeChatData?: ChatRoom | null
@@ -101,7 +92,7 @@ function onScroll(state: UseScrollReturn) {
     const { arrivedState } = state
     const { top } = arrivedState
 
-    if (top && props?.activeChatDetailsPagination?.has_next) {
+    if (top && props?.activeChatDetailsPagination?.next_page_cursor) {
       emits('triggerFetchChatRoomDetails')
     }
   }, 200) // Adjust the debounce delay as needed

@@ -5,8 +5,8 @@
     </template>
     <div class="w-full h-full flex bg-white overflow-hidden min-w-[800px]">
       <ChatHistoryRoomList :list-chat-room="historyListChatRoom" :active-chat-data="historyActiveChatData"
-        :admin-chat-queue="adminChatQueue" @update-chat-list-loading="toggleChatListLoading"
-        @update-active-chat="handleSetActiveChatData" @update-admin-chat-queue="updateAdminChatQueue"
+        @update-chat-list-loading="toggleChatListLoading"
+        @update-active-chat="handleSetActiveChatData"
         @toggle-global-loading="toggleGlobalLoading" @update-chat-list-data="updateChatListData"
         @update-active-chat-details="updateActiveChatDetails" />
       <template v-if="historyActiveChatData && historyActiveChatDetails">
@@ -36,7 +36,6 @@ const chattingContainerLoading = ref(false)
 const listChatLoading = ref(false)
 
 const historyListChatRoom = ref<ChatRoom[]>([])
-const adminChatQueue = ref<AdminChatQueue>()
 
 const historyActiveChatData = ref<ChatRoom | null>()
 const historyActiveChatDetails = ref<ChatRoomDetails>()
@@ -50,42 +49,9 @@ const { data: historyChatRooms } = await useAsyncData('historyChatRooms', () =>
 
 watchEffect(async () => {
   if (Array.isArray(historyChatRooms.value)) {
-    // await fetchHistoryChatRoomDetailsForAll(historyChatRooms.value)
     historyListChatRoom.value = [...historyChatRooms.value].sort(sortChatRoom)
   }
 })
-
-// async function fetchHistoryChatRoomDetailsForAll(historyChatRooms: ChatRoom[]) {
-//   try {
-//     const historyChatRoomsWithDetails = await Promise.all(
-//       historyChatRooms.map(async (chatRoom) => {
-//         const participantsResponse = await useApi<Response<Participant[]>>(
-//           `/new/admin/chat-rooms/${chatRoom.id}/chat-participant`
-//         );
-//         const messagesResponse = await useApi<ResponseWithPagination>(
-//           `/new/admin/chat-rooms/${chatRoom.id}/chats`
-//         );
-
-//         return {
-//           ...chatRoom,
-//           participant: participantsResponse.data.value?.data || [],
-//           chats: messagesResponse.data.value?.data || [],
-//         };
-//       })
-//     );
-
-//     historyListChatRoom.value = historyChatRoomsWithDetails;
-//     console.log('Chat rooms with details:', historyListChatRoom);
-//   } catch (e) {
-//     console.error('Error fetching chat room details:', e);
-//     toast.add({ message: 'Failed to fetch chat room details', type: 'error' });
-//   }
-// }
-// watchEffect(() => {
-//   if (Array.isArray(historyChatRooms.value)) {
-//     historyListChatRoom.value = [...historyChatRooms.value].sort(sortChatRoom)
-//   }
-// })
 
 function sortChatRoom(a: ChatRoom, b: ChatRoom) {
   return b.updated_at - a.updated_at
@@ -113,9 +79,6 @@ function handleSetActiveChatData(chatRoomData: ChatRoom) {
   fetchChatRoomDetails()
 }
 
-function updateAdminChatQueue(newAdminChatQueue: AdminChatQueue) {
-  adminChatQueue.value = { ...newAdminChatQueue }
-}
 
 function updateActiveChatDetails(newChatDetails: ChatRoomDetails) {
   historyActiveChatDetails.value = { ...newChatDetails }
@@ -145,8 +108,6 @@ async function fetchChatRoomDetails(nextCursor: string = '') {
       } else {
         historyActiveChatDetails.value = { chat_room: historyActiveChatData.value, chats: data.value?.data }
       }
-      console.log(nextCursor)
-      console.log(historyActiveChatDetails.value)
 
       historyActiveChatDetailsPagination.value = data.value?.pagination
     } else {

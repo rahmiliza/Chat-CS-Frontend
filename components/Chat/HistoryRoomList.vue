@@ -17,13 +17,12 @@
 
 <script setup lang="ts">
 
-import type { ChatRoom, AdminChatQueueExtended, AdminChatQueue } from '~/models/chat'
+import type { ChatRoom } from '~/models/chat'
 import PermissionGuard from '../PermissionGuard.vue'
 
 interface Props {
   listChatRoom: ChatRoom[]
   activeChatData?: ChatRoom | null
-  adminChatQueue?: AdminChatQueue | null
 }
 
 const props = withDefaults(defineProps<Props>(), {})
@@ -31,7 +30,6 @@ const props = withDefaults(defineProps<Props>(), {})
 const emits = defineEmits([
   'update-active-chat',
   'updateChatListLoading',
-  'updateAdminChatQueue',
   'toggleGlobalLoading',
   'updateChatListData',
   'updateActiveChatDetails',
