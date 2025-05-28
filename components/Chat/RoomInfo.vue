@@ -90,7 +90,6 @@ function getRoleIcon(userId: string) {
 }
 
 getOtherParticipantIndex()
-console.log(props.chatRoomData?.participant.length)
 </script>
 
 <style scoped></style>

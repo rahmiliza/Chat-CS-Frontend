@@ -51,7 +51,7 @@
 <script setup lang="ts">
 import { io } from 'socket.io-client'
 
-import type { ChatRoom, AdminChatQueueExtended, AdminChatQueue } from '~/models/chat'
+import type { ChatRoom } from '~/models/chat'
 import PermissionGuard from '../PermissionGuard.vue'
 import type { Response } from '~/models/response';
 
@@ -71,7 +71,6 @@ const selectedParticipantToAddToChat = ref<string | number>('')
 interface Props {
   listChatRoom: ChatRoom[]
   activeChatData?: ChatRoom | null
-  adminChatQueue?: AdminChatQueue | null
 }
 
 const props = withDefaults(defineProps<Props>(), {})
@@ -79,7 +78,6 @@ const props = withDefaults(defineProps<Props>(), {})
 const emits = defineEmits([
   'update-active-chat',
   'updateChatListLoading',
-  'updateAdminChatQueue',
   'toggleGlobalLoading',
   'updateChatListData',
   'updateActiveChatDetails',
@@ -94,49 +92,6 @@ const socket = io(socketUrl)
 
 function emitLoading(isLoading: boolean) {
   emits('updateChattingContainerLoading', isLoading)
-}
-
-async function handleAddAdminChatIndex() {
-  if (
-    !props.adminChatQueue?.queue?.length ||
-    props.listChatRoom.filter((chatRoom) => !chatRoom.closed_at).length >= 3
-  ) {
-    return
-  }
-  // list for chat room
-  try {
-    const { data, error } = await useApi<Response<AdminChatQueueExtended>>('new/admin/chat-rooms', {
-      method: 'POST',
-    })
-
-    if (data.value?.ok) {
-      const tempListChatRoom = [...props.listChatRoom]
-      tempListChatRoom.push(data.value?.data?.assigned_chat_room)
-
-      tempListChatRoom.sort((a, b) => {
-        return b.last_message.created_at - a.last_message.created_at
-      })
-
-      const otherParticipantIndex =
-        data.value?.data?.assigned_chat_room?.participant?.findIndex((item) => item?.user_id !== user?.id) ?? 0
-
-      emits('updateChatListData', tempListChatRoom)
-      socket.emit('submit-message-queue', data.value?.data?.remaining_queue ?? [])
-      socket.emit(
-        'accept-admin-chat',
-        data.value?.data?.assigned_chat_room ?? {},
-        data.value?.data?.assigned_chat_room?.participant[otherParticipantIndex]?.user_id ?? ''
-      )
-    } else {
-      const errMsg = error.value?.data?.message ?? 'An Error was Accrued, Please try again'
-      toast.add({ message: errMsg, type: "error" })
-    }
-  } catch (e: any) {
-    const errMsg = e?.value?.data?.message || 'An Error was Accrued, Please try againn'
-    toast.add({ message: errMsg, type: "error" })
-  } finally {
-    emits('toggleGlobalLoading', false)
-  }
 }
 
 function handleCloseModalCreateChat() {
@@ -155,7 +110,6 @@ const handleCreateChat = async () => {
     })
 
     if (data.value?.data) {
-      console.log(data.value?.data)
       listCustomerOpt.value =
         data.value?.data?.map((item: User) => {
           const isParticipant = props.activeChatData?.participant.some((participant) => participant.user_id === item.id)
@@ -207,7 +161,6 @@ async function handleOkCreateChat() {
       toast.add({ message: errMsg, type: "error" })
     }
   } catch (e: any) {
-    console.log(e)
     const errMsg = e?.value?.data?.message || 'Failed to add participant, please try again2'
     toast.add({ message: errMsg, type: "error" })
   } finally {
@@ -227,7 +180,7 @@ const filteredChatRooms = computed(() => {
 });
 
 function handleSearch() {
-  // console.log('Search query:', searchQuery.value);
+
 }
 
 defineExpose({
