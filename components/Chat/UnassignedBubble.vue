@@ -71,8 +71,6 @@ function getRoleIcon(userId: string) {
 
 const showModalUnassignedAttachment = ref(false)
 const selectedUnassignedAttachmentUrl = ref('')
-
-console.log(props.activeChatDetails);
 </script>
 
 <style scoped></style>
