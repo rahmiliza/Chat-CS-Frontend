@@ -115,24 +115,6 @@
   </div>
   <input ref="fileInput" type="file" accept="image/*" :multiple="false" class="hidden" @input="handleFileInput" />
 
-  <!-- * Modal Adding Participant -->
-  <UIModals v-model="openModalAddNewParticipant" modal-title="Add Participant" :show-overflow="true"
-    :on-ok="handleOkAddNewParticipant" :on-close-modal="handleCloseModalAddNewParticipant"
-    :disabled-btn-ok="!selectedParticipantToAddToChat" class="dark:text-black">
-    <template #modal-content>
-      <div class="w-[400px] h-[80px] select-none overflow-y-visible">
-        <template v-if="loadingGetListAdmin">
-          <UISkeleton />
-        </template>
-        <template v-else>
-          <div class="mt-2 mb-1 text-slate-700 text-xl py-2">Admin</div>
-          <UISelect v-model="selectedParticipantToAddToChat" placeholder="Choose one Admin" :options="listAdminOptions"
-            class="text-lg" />
-        </template>
-      </div>
-    </template>
-  </UIModals>
-
 
   <UIConfirmModal v-model="showFinishConfirm" class="text-lg font-bold" title="Chat Close Confirmation"
     message="Will you close this chat?" @confirm="handleFinishChat" />
@@ -152,11 +134,6 @@ import type {
   ChatRoom,
   ChatRoomDetails,
   Chat,
-  // UpsertResponse,
-  // CursorPaginationResponse,
-  // TemporaryFileUpload,
-  // User,
-  // Option,
 } from '~/models/chat'
 import type { PaginationResponse, Response } from '~/models/response'
 
@@ -191,10 +168,6 @@ const {
   public: { socketUrl },
 } = useRuntimeConfig()
 const socket = io(socketUrl)
-
-const loadingGetListAdmin = ref(false)
-
-const listAdminOptions = ref<Option[]>([])
 
 const chatList = ref<HTMLElement | null>(null)
 const fileInput = ref<HTMLInputElement | null>(null)
@@ -255,78 +228,6 @@ function getOtherParticipantIndex() {
   return 0
 }
 
-async function handleAddingParticipant() {
-  selectedParticipantToAddToChat.value = ''
-  openModalAddNewParticipant.value = true
-  loadingGetListAdmin.value = true
-  try {
-    const { data, error } = await useApi<UpsertResponse<User[]>>('new/admin/chat-rooms/admin?per_page=1000', {
-      method: 'GET',
-    })
-
-    if (data.value?.data) {
-      listAdminOptions.value =
-        data.value?.data?.map((item: User) => {
-          const isParticipant = props.activeChatData?.participant.some((participant) => participant.user_id === item.id)
-          return { value: item?.id ?? '', label: item?.name ?? '', disabled: isParticipant }
-        }) ?? []
-    } else {
-      const errMsg = error.value?.data?.message ?? 'Failed to fetch admin list, please try again'
-      toast.add({ message: errMsg, type: "error" })
-    }
-  } catch (e: any) {
-    const errMsg = e?.value?.data?.message || 'Failed to fetch admin list, please try again'
-    toast.add({ message: errMsg, type: "error" })
-  } finally {
-    loadingGetListAdmin.value = false
-  }
-}
-
-function handleCloseModalAddNewParticipant() {
-  openModalAddNewParticipant.value = false
-}
-
-async function handleOkAddNewParticipant() {
-  emitLoading(true)
-
-  try {
-    const { data, error } = await useApi<UpsertResponse<ChatRoom>>('new/chats/add-participant', {
-      method: 'POST',
-      body: {
-        room_id: props?.activeChatData?.id ?? '',
-        admin_id: selectedParticipantToAddToChat.value ?? '',
-      },
-    })
-
-    if (data.value?.ok) {
-      toast.add({ message: 'Participant added successfully', type: "success" })
-
-      const chatIndex = props?.listChatRoom?.findIndex((item) => item?.id === props?.activeChatDetails?.chat_room?.id)
-
-      if (chatIndex !== undefined && chatIndex > -1 && props.listChatRoom) {
-        const tempListChat = [...props.listChatRoom]
-        tempListChat[chatIndex] = { ...tempListChat[chatIndex], ...data.value?.data }
-
-        emits('updateChatListData', tempListChat)
-        emits('triggerFetchChatRoomDetails')
-      }
-    }
-    else if (data.value?.status === false) {
-      toast.add({ message: 'Participant already exists in this chat', type: "error" })
-    }
-    else {
-      const errMsg = error.value?.data?.message ?? 'Failed to add participant, please try again1'
-      toast.add({ message: errMsg, type: "error" })
-    }
-  } catch (e: any) {
-    console.log(e)
-    const errMsg = e?.value?.data?.message || 'Failed to add participant, please try again2'
-    toast.add({ message: errMsg, type: "error" })
-  } finally {
-    emitLoading(false)
-    openModalAddNewParticipant.value = false
-  }
-}
 
 async function handleRequestSendMessage(message_type: 'TEXT' | 'IMAGE' = 'TEXT') {
   let chatMessage;
@@ -407,14 +308,7 @@ async function handleFinishChat() {
 
         // Sorting listChatRoom based on last_message.created_at and status
         // tempListChat.sort((a, b) => {
-
-        //   if (a.status === 'ACTIVE' && b.status !== 'ACTIVE') {
-        //     return -1;
-        //   } else if (a.status !== 'ACTIVE' && b.status === 'ACTIVE') {
-        //     return 1;
-        //   } else {
         //     return b.last_message.created_at - a.last_message.created_at
-        //   }
         // })
         // emits('updateChatListData', tempListChat)
         // emits('updateActiveChat', null)
